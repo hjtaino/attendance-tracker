@@ -1,1 +1,1 @@
-export { default } from './Configuration'
+export { default } from '@/components/pages/leave-request'

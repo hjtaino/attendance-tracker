@@ -6,7 +6,7 @@ const Crud = ( () => {
         <Box>
             <Button 
                 variant="contained"
-                size="large"
+                size="small"
                 sx={{
                     backgroundColor: '#0000C9'
                 }}

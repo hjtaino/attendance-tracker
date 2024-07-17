@@ -5,6 +5,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Box from '@mui/material/Box';
 
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 const DropdownFilter = ( () => {
 
@@ -18,6 +19,8 @@ const DropdownFilter = ( () => {
         >
             <Button 
                 variant="contained"
+                size="small"
+                startIcon={<FilterAltIcon />}
                 onClick={ () => { setOpen(true) }}
                 sx={{
                     backgroundColor: '#0000C9'

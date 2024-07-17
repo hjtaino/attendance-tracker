@@ -8,7 +8,9 @@ const Searchbar = ( () => {
             disablePortal
             id="searchbar_filter"
             options={[]}
-            sx={{ width: 300 }}
+            sx={{ 
+                width: 300,
+            }}
             renderInput={(params) => <TextField {...params} label="Search" />}
       />
     )

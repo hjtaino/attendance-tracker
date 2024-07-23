@@ -1,0 +1,59 @@
+table:
+  schema: public
+  name: functional_lines
+array_relationships:
+  - name: users
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: users
+        insertion_order: null
+        column_mapping:
+          id: functional_lines_id
+insert_permissions:
+  - role: manager
+    permission:
+      check: {}
+      columns:
+        - id
+        - name
+        - key
+        - users_ids
+        - active
+      backend_only: true
+  - role: user
+    permission:
+      check: {}
+      columns: []
+      backend_only: false
+select_permissions:
+  - role: manager
+    permission:
+      columns:
+        - id
+        - active
+        - key
+        - name
+        - users_ids
+      filter: {}
+  - role: user
+    permission:
+      columns: []
+      filter: {}
+update_permissions:
+  - role: manager
+    permission:
+      columns:
+        - id
+        - active
+        - key
+        - name
+        - users_ids
+      filter: {}
+      check: {}
+  - role: user
+    permission:
+      columns: []
+      filter: {}
+      check: {}

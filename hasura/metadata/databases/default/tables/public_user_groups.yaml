@@ -1,0 +1,40 @@
+table:
+  schema: public
+  name: user_groups
+insert_permissions:
+  - role: manager
+    permission:
+      check: {}
+      columns:
+        - id
+        - name
+      backend_only: false
+  - role: user
+    permission:
+      check: {}
+      columns: []
+      backend_only: false
+select_permissions:
+  - role: manager
+    permission:
+      columns:
+        - name
+        - id
+      filter: {}
+  - role: user
+    permission:
+      columns: []
+      filter: {}
+update_permissions:
+  - role: manager
+    permission:
+      columns:
+        - name
+        - id
+      filter: {}
+      check: {}
+  - role: user
+    permission:
+      columns: []
+      filter: {}
+      check: null

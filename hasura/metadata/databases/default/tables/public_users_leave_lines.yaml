@@ -1,25 +1,16 @@
 table:
   schema: public
-  name: users
+  name: users_leave_lines
 object_relationships:
-  - name: functional_lines
+  - name: users
     using:
       manual_configuration:
         remote_table:
           schema: public
-          name: functional_lines
+          name: users
         insertion_order: null
         column_mapping:
-          functional_lines_id: id
-  - name: group
-    using:
-      manual_configuration:
-        remote_table:
-          schema: public
-          name: user_groups
-        insertion_order: null
-        column_mapping:
-          group_id: id
+          users_id: id
 insert_permissions:
   - role: manager
     permission:
@@ -27,16 +18,15 @@ insert_permissions:
       columns:
         - id
         - name
-        - ntid
+        - count_vacation_leave
+        - count_vacation_leave_carry
+        - count_holiday_in_lieu
+        - total_vacation_leave
+        - year
         - created_at
         - updated_at
-        - full_name
-        - first_name
-        - middle_name
-        - last_name
-        - functional_lines_id
+        - users_id
         - active
-        - group_id
       backend_only: false
   - role: user
     permission:
@@ -49,14 +39,13 @@ select_permissions:
       columns:
         - id
         - active
-        - first_name
-        - full_name
-        - last_name
-        - middle_name
         - name
-        - ntid
-        - functional_lines_id
-        - group_id
+        - year
+        - count_holiday_in_lieu
+        - count_vacation_leave
+        - count_vacation_leave_carry
+        - total_vacation_leave
+        - users_id
         - created_at
         - updated_at
       filter: {}
@@ -70,14 +59,13 @@ update_permissions:
       columns:
         - id
         - active
-        - first_name
-        - full_name
-        - last_name
-        - middle_name
         - name
-        - ntid
-        - functional_lines_id
-        - group_id
+        - year
+        - count_holiday_in_lieu
+        - count_vacation_leave
+        - count_vacation_leave_carry
+        - total_vacation_leave
+        - users_id
         - created_at
         - updated_at
       filter: {}

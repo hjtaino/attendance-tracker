@@ -1,25 +1,25 @@
 table:
   schema: public
-  name: users
+  name: trans_leave_request_attachments
 object_relationships:
-  - name: functional_lines
+  - name: trans_leave_request
     using:
       manual_configuration:
         remote_table:
           schema: public
-          name: functional_lines
+          name: trans_leave_request
         insertion_order: null
         column_mapping:
-          functional_lines_id: id
-  - name: group
+          trans_leave_request_id: id
+  - name: user
     using:
       manual_configuration:
         remote_table:
           schema: public
-          name: user_groups
+          name: users
         insertion_order: null
         column_mapping:
-          group_id: id
+          user_id: id
 insert_permissions:
   - role: manager
     permission:
@@ -27,16 +27,12 @@ insert_permissions:
       columns:
         - id
         - name
-        - ntid
         - created_at
         - updated_at
-        - full_name
-        - first_name
-        - middle_name
-        - last_name
-        - functional_lines_id
+        - user_id
+        - trans_leave_request_id
         - active
-        - group_id
+        - attachment
       backend_only: false
   - role: user
     permission:
@@ -49,14 +45,10 @@ select_permissions:
       columns:
         - id
         - active
-        - first_name
-        - full_name
-        - last_name
-        - middle_name
         - name
-        - ntid
-        - functional_lines_id
-        - group_id
+        - trans_leave_request_id
+        - user_id
+        - attachment
         - created_at
         - updated_at
       filter: {}
@@ -70,14 +62,10 @@ update_permissions:
       columns:
         - id
         - active
-        - first_name
-        - full_name
-        - last_name
-        - middle_name
         - name
-        - ntid
-        - functional_lines_id
-        - group_id
+        - trans_leave_request_id
+        - user_id
+        - attachment
         - created_at
         - updated_at
       filter: {}
@@ -86,4 +74,4 @@ update_permissions:
     permission:
       columns: []
       filter: {}
-      check: {}
+      check: null

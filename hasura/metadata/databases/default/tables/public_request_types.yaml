@@ -1,0 +1,46 @@
+table:
+  schema: public
+  name: request_types
+insert_permissions:
+  - role: manager
+    permission:
+      check: {}
+      columns:
+        - id
+        - name
+        - key
+        - active
+      backend_only: false
+  - role: user
+    permission:
+      check: {}
+      columns: []
+      backend_only: false
+select_permissions:
+  - role: manager
+    permission:
+      columns:
+        - id
+        - active
+        - key
+        - name
+      filter: {}
+  - role: user
+    permission:
+      columns: []
+      filter: {}
+update_permissions:
+  - role: manager
+    permission:
+      columns:
+        - id
+        - active
+        - key
+        - name
+      filter: {}
+      check: {}
+  - role: user
+    permission:
+      columns: []
+      filter: {}
+      check: null

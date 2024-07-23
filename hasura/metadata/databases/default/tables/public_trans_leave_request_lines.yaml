@@ -1,42 +1,47 @@
 table:
   schema: public
-  name: users
+  name: trans_leave_request_lines
 object_relationships:
-  - name: functional_lines
+  - name: request_type
     using:
       manual_configuration:
         remote_table:
           schema: public
-          name: functional_lines
+          name: request_types
         insertion_order: null
         column_mapping:
-          functional_lines_id: id
-  - name: group
+          request_type_id: id
+  - name: requested
     using:
       manual_configuration:
         remote_table:
           schema: public
-          name: user_groups
+          name: users
         insertion_order: null
         column_mapping:
-          group_id: id
+          requested_id: id
+  - name: trans_leave_request
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: trans_leave_request
+        insertion_order: null
+        column_mapping:
+          trans_leave_request_id: id
 insert_permissions:
   - role: manager
     permission:
       check: {}
       columns:
         - id
-        - name
-        - ntid
+        - date
         - created_at
         - updated_at
-        - full_name
-        - first_name
-        - middle_name
-        - last_name
-        - functional_lines_id
+        - requested_id
+        - trans_leave_request_id
         - active
-        - group_id
+        - request_type_id
       backend_only: false
   - role: user
     permission:
@@ -49,14 +54,10 @@ select_permissions:
       columns:
         - id
         - active
-        - first_name
-        - full_name
-        - last_name
-        - middle_name
-        - name
-        - ntid
-        - functional_lines_id
-        - group_id
+        - date
+        - request_type_id
+        - requested_id
+        - trans_leave_request_id
         - created_at
         - updated_at
       filter: {}
@@ -70,14 +71,10 @@ update_permissions:
       columns:
         - id
         - active
-        - first_name
-        - full_name
-        - last_name
-        - middle_name
-        - name
-        - ntid
-        - functional_lines_id
-        - group_id
+        - date
+        - request_type_id
+        - requested_id
+        - trans_leave_request_id
         - created_at
         - updated_at
       filter: {}
@@ -86,4 +83,4 @@ update_permissions:
     permission:
       columns: []
       filter: {}
-      check: {}
+      check: null

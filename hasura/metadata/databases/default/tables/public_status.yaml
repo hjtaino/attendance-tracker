@@ -1,25 +1,16 @@
 table:
   schema: public
-  name: users
-object_relationships:
-  - name: functional_lines
+  name: status
+array_relationships:
+  - name: trans_leave_requests
     using:
       manual_configuration:
         remote_table:
           schema: public
-          name: functional_lines
+          name: trans_leave_request
         insertion_order: null
         column_mapping:
-          functional_lines_id: id
-  - name: group
-    using:
-      manual_configuration:
-        remote_table:
-          schema: public
-          name: user_groups
-        insertion_order: null
-        column_mapping:
-          group_id: id
+          id: status_id
 insert_permissions:
   - role: manager
     permission:
@@ -27,16 +18,11 @@ insert_permissions:
       columns:
         - id
         - name
-        - ntid
+        - sequence
+        - trans_leave_request_ids
         - created_at
         - updated_at
-        - full_name
-        - first_name
-        - middle_name
-        - last_name
-        - functional_lines_id
         - active
-        - group_id
       backend_only: false
   - role: user
     permission:
@@ -49,14 +35,9 @@ select_permissions:
       columns:
         - id
         - active
-        - first_name
-        - full_name
-        - last_name
-        - middle_name
         - name
-        - ntid
-        - functional_lines_id
-        - group_id
+        - sequence
+        - trans_leave_request_ids
         - created_at
         - updated_at
       filter: {}
@@ -70,14 +51,9 @@ update_permissions:
       columns:
         - id
         - active
-        - first_name
-        - full_name
-        - last_name
-        - middle_name
         - name
-        - ntid
-        - functional_lines_id
-        - group_id
+        - sequence
+        - trans_leave_request_ids
         - created_at
         - updated_at
       filter: {}

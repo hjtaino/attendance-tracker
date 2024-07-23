@@ -1,0 +1,125 @@
+table:
+  schema: public
+  name: trans_leave_request
+object_relationships:
+  - name: manager
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: users
+        insertion_order: null
+        column_mapping:
+          manager_id: id
+  - name: request_type
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: request_types
+        insertion_order: null
+        column_mapping:
+          request_type_id: id
+  - name: requested
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: users
+        insertion_order: null
+        column_mapping:
+          requested_id: id
+  - name: status
+    using:
+      manual_configuration:
+        remote_table:
+          schema: public
+          name: status
+        insertion_order: null
+        column_mapping:
+          status_id: id
+insert_permissions:
+  - role: manager
+    permission:
+      check: {}
+      columns:
+        - id
+        - requested_id
+        - date_from_leave
+        - date_to_leave
+        - year
+        - month
+        - day
+        - status_id
+        - created_at
+        - updated_at
+        - manager_id
+        - submitted_date
+        - approved_date
+        - rejected_date
+        - cancelled_date
+        - remarks
+        - request_type_id
+        - active
+      backend_only: false
+  - role: user
+    permission:
+      check: {}
+      columns: []
+      backend_only: false
+select_permissions:
+  - role: manager
+    permission:
+      columns:
+        - id
+        - active
+        - day
+        - month
+        - year
+        - approved_date
+        - cancelled_date
+        - date_from_leave
+        - date_to_leave
+        - rejected_date
+        - submitted_date
+        - manager_id
+        - request_type_id
+        - requested_id
+        - status_id
+        - remarks
+        - created_at
+        - updated_at
+      filter: {}
+  - role: user
+    permission:
+      columns: []
+      filter: {}
+update_permissions:
+  - role: manager
+    permission:
+      columns:
+        - id
+        - active
+        - day
+        - month
+        - year
+        - approved_date
+        - cancelled_date
+        - date_from_leave
+        - date_to_leave
+        - rejected_date
+        - submitted_date
+        - manager_id
+        - request_type_id
+        - requested_id
+        - status_id
+        - remarks
+        - created_at
+        - updated_at
+      filter: {}
+      check: {}
+  - role: user
+    permission:
+      columns: []
+      filter: {}
+      check: null

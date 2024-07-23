@@ -1,0 +1,1 @@
+CREATE TABLE "public"."functional_lines" ("id" bigserial NOT NULL, "name" varchar NOT NULL, "key" varchar NOT NULL, "users_ids" serial NOT NULL, "active" boolean NOT NULL DEFAULT TRUE, PRIMARY KEY ("id") , UNIQUE ("id"));

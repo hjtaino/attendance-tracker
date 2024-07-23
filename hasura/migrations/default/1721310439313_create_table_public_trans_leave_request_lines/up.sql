@@ -1,0 +1,1 @@
+CREATE TABLE "public"."trans_leave_request_lines" ("id" int8 NOT NULL, "date" date NOT NULL, "created_at" timestamptz NOT NULL, "updated_at" timestamptz NOT NULL, "requested_id" serial NOT NULL, "trans_leave_request_id" serial NOT NULL, "active" boolean NOT NULL DEFAULT TRUE, PRIMARY KEY ("id") );

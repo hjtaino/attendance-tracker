@@ -1,0 +1,1 @@
+CREATE TABLE "public"."status" ("id" bigserial NOT NULL, "name" varchar NOT NULL, "sequence" serial NOT NULL, "trans_leave_request_ids" serial NOT NULL, "created_at" timestamptz NOT NULL, "updated_at" timestamptz NOT NULL, "active" boolean NOT NULL DEFAULT TRUE, PRIMARY KEY ("id") );

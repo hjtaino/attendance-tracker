@@ -64,6 +64,14 @@ const Navigation = ( () => {
                 {
                     label: 'Request Types',
                     value: '/request-types'
+                },
+                {
+                    label: 'Status',
+                    value: '/status'
+                },
+                {
+                    label: 'Users',
+                    value: '/users'
                 }
             ]
         },
@@ -120,7 +128,7 @@ const Navigation = ( () => {
     })
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '100%'}}>
             <Tabs
                 value={value}
                 onChange={handleChange}

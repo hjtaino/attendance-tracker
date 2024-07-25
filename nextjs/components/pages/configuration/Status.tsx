@@ -5,23 +5,23 @@ import Box from '@mui/material/Box';
 
 const columns: GridColDef[] = [
     { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'key', headerName: 'Key', width: 150 },
+    { field: 'sequence', headerName: 'Sequence', width: 150 },
     { field: 'active', headerName: 'Active', width: 200 },
 ];
     
 const rows = [
-    { id: 1, name: 'Harvey Taino', key: 'Data Management and Analytics Associate', active: true },
-    { id: 2, name: 'Maalik Mercado', key: 'Data Management and Analytics Associate', active: true },
-    { id: 3, name: 'Krystle Celso', key: 'Data Management and Analytics Associate', active: true },
+    { id: 1, name: 'Harvey Taino', sequence: 1, active: true },
+    { id: 2, name: 'Maalik Mercado', sequence: 2, active: true },
+    { id: 3, name: 'Krystle Celso', sequence: 3, active: true },
 ];
 
-const RequestTypes = ( () => {
+const Status = ( () => {
     return(
         <Box>
             <Layout />
             <Toolbar />
             <Box sx={{ padding: 2 }}>
-                Request Types
+                Status
                 <Box sx={{ height: '100%', width: '100%', marginTop: 2 }}>
                     <DataGrid
                         rows={rows}
@@ -43,4 +43,4 @@ const RequestTypes = ( () => {
     );
 })
 
-export default RequestTypes
+export default Status 

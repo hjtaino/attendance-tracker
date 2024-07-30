@@ -47,17 +47,19 @@ select_permissions:
   - role: manager
     permission:
       columns:
-        - id
         - active
+        - created_at
         - first_name
         - full_name
+        - functional_lines_id
+        - group_id
+        - id
         - last_name
         - middle_name
         - name
         - ntid
-        - functional_lines_id
-        - group_id
-        - created_at
+        - role
+        - suffix_name
         - updated_at
       filter: {}
   - role: user

@@ -36,7 +36,7 @@ function Login() {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const credentials = new FormData(event.currentTarget);
-    const username = credentials.get('username')
+    const ntid = credentials.get('ntid')
 
     fetch('http://localhost:8080/v1/graphql', {
         method: 'POST',
@@ -47,9 +47,9 @@ function Login() {
     
         body: JSON.stringify({
           query: `{
-            users(where: {username: {_eq: ${username}}}) {
+            users(where: {ntid: {_eq: ${ntid}}}) {
               id
-              username
+              ntid
               role
             }
           }`
@@ -57,15 +57,14 @@ function Login() {
       })
       .then( res => res.json())
       .then(res => {
-
         if (res.data.users.length > 0) {
           const id = res.data.users[0].id
-          const username = res.data.users[0].username
+          const ntid = res.data.users[0].ntid
           const role = res.data.users[0].role
-  
-          const token = jwt_token(id, username, role)
+
+          const token = jwt_token(id, ntid, role)
           localStorage.setItem("token", token);
-          router.push('http://localhost:3000/')
+          router.push('http://localhost:3000/dashboard')
         }
         else {
           setOpen(true);
@@ -88,16 +87,16 @@ function Login() {
         >
           <AssignmentIcon fontSize='large'/>
           <Typography component="h1" variant="h5">
-            PROJECT MANAGEMENT
+            ATTENDANCE TRACKER
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
               fullWidth
-              id="username"
-              label="Username"
-              name="username"
+              id="ntid"
+              label="NTID"
+              name="ntid"
               autoComplete="username"
               autoFocus
             />

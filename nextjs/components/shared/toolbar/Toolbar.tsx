@@ -4,7 +4,10 @@ import Options from './menu'
 
 import Box from '@mui/material/Box';
 
-const Toolbar = ( () => {
+const Toolbar = ( (
+    model,
+    type
+) => {
     return (
         <Box>
             <Box
@@ -31,7 +34,7 @@ const Toolbar = ( () => {
                     justifyContent: 'space-between'
                 }}
             >
-                <Crud />
+                <Crud model={model} type={type}/>
             </Box>
         </Box>
 

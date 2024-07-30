@@ -35,7 +35,7 @@ services:
           "https://hasura.io/jwt/claims": {
             "x-hasura-allowed-roles": { "path": "$$.allowedRoles" },
             "x-hasura-default-role":  { "path": "$$.defaultRole" },
-            "x-hasura-user-id": { "path": "$$.username" }
+            "x-hasura-user-id": { "path": "$$.ntid" }
           }
         }
       

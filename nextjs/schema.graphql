@@ -14,6 +14,21 @@ directive @cached(
 ) on QUERY
 
 """
+Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
+"""
+input Boolean_comparison_exp {
+  _eq: Boolean
+  _gt: Boolean
+  _gte: Boolean
+  _in: [Boolean!]
+  _is_null: Boolean
+  _lt: Boolean
+  _lte: Boolean
+  _neq: Boolean
+  _nin: [Boolean!]
+}
+
+"""
 Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'.
 """
 input Int_comparison_exp {
@@ -98,20 +113,342 @@ input bigint_comparison_exp {
   _nin: [bigint!]
 }
 
+scalar bytea
+
+"""
+Boolean expression to compare columns of type "bytea". All fields are combined with logical 'AND'.
+"""
+input bytea_comparison_exp {
+  _eq: bytea
+  _gt: bytea
+  _gte: bytea
+  _in: [bytea!]
+  _is_null: Boolean
+  _lt: bytea
+  _lte: bytea
+  _neq: bytea
+  _nin: [bytea!]
+}
+
+scalar date
+
+"""
+Boolean expression to compare columns of type "date". All fields are combined with logical 'AND'.
+"""
+input date_comparison_exp {
+  _eq: date
+  _gt: date
+  _gte: date
+  _in: [date!]
+  _is_null: Boolean
+  _lt: date
+  _lte: date
+  _neq: date
+  _nin: [date!]
+}
+
+"""
+columns and relationships of "functional_lines"
+"""
+type functional_lines {
+  active: Boolean!
+  id: bigint!
+  key: String!
+  name: String!
+
+  """An array relationship"""
+  users(
+    """distinct select on columns"""
+    distinct_on: [users_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_order_by!]
+
+    """filter the rows returned"""
+    where: users_bool_exp
+  ): [users!]!
+
+  """An aggregate relationship"""
+  users_aggregate(
+    """distinct select on columns"""
+    distinct_on: [users_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_order_by!]
+
+    """filter the rows returned"""
+    where: users_bool_exp
+  ): users_aggregate!
+  users_ids: Int!
+}
+
+"""
+aggregated selection of "functional_lines"
+"""
+type functional_lines_aggregate {
+  aggregate: functional_lines_aggregate_fields
+  nodes: [functional_lines!]!
+}
+
+"""
+aggregate fields of "functional_lines"
+"""
+type functional_lines_aggregate_fields {
+  avg: functional_lines_avg_fields
+  count(columns: [functional_lines_select_column!], distinct: Boolean): Int!
+  max: functional_lines_max_fields
+  min: functional_lines_min_fields
+  stddev: functional_lines_stddev_fields
+  stddev_pop: functional_lines_stddev_pop_fields
+  stddev_samp: functional_lines_stddev_samp_fields
+  sum: functional_lines_sum_fields
+  var_pop: functional_lines_var_pop_fields
+  var_samp: functional_lines_var_samp_fields
+  variance: functional_lines_variance_fields
+}
+
+"""aggregate avg on columns"""
+type functional_lines_avg_fields {
+  id: Float
+  users_ids: Float
+}
+
+"""
+Boolean expression to filter rows from the table "functional_lines". All fields are combined with a logical 'AND'.
+"""
+input functional_lines_bool_exp {
+  _and: [functional_lines_bool_exp!]
+  _not: functional_lines_bool_exp
+  _or: [functional_lines_bool_exp!]
+  active: Boolean_comparison_exp
+  id: bigint_comparison_exp
+  key: String_comparison_exp
+  name: String_comparison_exp
+  users: users_bool_exp
+  users_ids: Int_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "functional_lines"
+"""
+enum functional_lines_constraint {
+  """unique or primary key constraint"""
+  functional_lines_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "functional_lines"
+"""
+input functional_lines_inc_input {
+  id: bigint
+  users_ids: Int
+}
+
+"""
+input type for inserting data into table "functional_lines"
+"""
+input functional_lines_insert_input {
+  active: Boolean
+  id: bigint
+  key: String
+  name: String
+  users: users_arr_rel_insert_input
+  users_ids: Int
+}
+
+"""aggregate max on columns"""
+type functional_lines_max_fields {
+  id: bigint
+  key: String
+  name: String
+  users_ids: Int
+}
+
+"""aggregate min on columns"""
+type functional_lines_min_fields {
+  id: bigint
+  key: String
+  name: String
+  users_ids: Int
+}
+
+"""
+response of any mutation on the table "functional_lines"
+"""
+type functional_lines_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [functional_lines!]!
+}
+
+"""
+input type for inserting object relation for remote table "functional_lines"
+"""
+input functional_lines_obj_rel_insert_input {
+  data: functional_lines_insert_input!
+
+  """on conflict condition"""
+  on_conflict: functional_lines_on_conflict
+}
+
+"""
+on conflict condition type for table "functional_lines"
+"""
+input functional_lines_on_conflict {
+  constraint: functional_lines_constraint!
+  update_columns: [functional_lines_update_column!]! = []
+  where: functional_lines_bool_exp
+}
+
+"""Ordering options when selecting data from "functional_lines"."""
+input functional_lines_order_by {
+  active: order_by
+  id: order_by
+  key: order_by
+  name: order_by
+  users_aggregate: users_aggregate_order_by
+  users_ids: order_by
+}
+
+"""primary key columns input for table: functional_lines"""
+input functional_lines_pk_columns_input {
+  id: bigint!
+}
+
+"""
+select columns of table "functional_lines"
+"""
+enum functional_lines_select_column {
+  """column name"""
+  active
+
+  """column name"""
+  id
+
+  """column name"""
+  key
+
+  """column name"""
+  name
+
+  """column name"""
+  users_ids
+}
+
+"""
+input type for updating data in table "functional_lines"
+"""
+input functional_lines_set_input {
+  active: Boolean
+  id: bigint
+  key: String
+  name: String
+  users_ids: Int
+}
+
+"""aggregate stddev on columns"""
+type functional_lines_stddev_fields {
+  id: Float
+  users_ids: Float
+}
+
+"""aggregate stddev_pop on columns"""
+type functional_lines_stddev_pop_fields {
+  id: Float
+  users_ids: Float
+}
+
+"""aggregate stddev_samp on columns"""
+type functional_lines_stddev_samp_fields {
+  id: Float
+  users_ids: Float
+}
+
+"""aggregate sum on columns"""
+type functional_lines_sum_fields {
+  id: bigint
+  users_ids: Int
+}
+
+"""
+update columns of table "functional_lines"
+"""
+enum functional_lines_update_column {
+  """column name"""
+  active
+
+  """column name"""
+  id
+
+  """column name"""
+  key
+
+  """column name"""
+  name
+
+  """column name"""
+  users_ids
+}
+
+"""aggregate var_pop on columns"""
+type functional_lines_var_pop_fields {
+  id: Float
+  users_ids: Float
+}
+
+"""aggregate var_samp on columns"""
+type functional_lines_var_samp_fields {
+  id: Float
+  users_ids: Float
+}
+
+"""aggregate variance on columns"""
+type functional_lines_variance_fields {
+  id: Float
+  users_ids: Float
+}
+
 """mutation root"""
 type mutation_root {
   """
-  delete data from the table: "projects"
+  delete data from the table: "functional_lines"
   """
-  delete_projects(
+  delete_functional_lines(
     """filter the rows which have to be deleted"""
-    where: projects_bool_exp!
-  ): projects_mutation_response
+    where: functional_lines_bool_exp!
+  ): functional_lines_mutation_response
 
   """
-  delete single row from the table: "projects"
+  delete single row from the table: "functional_lines"
   """
-  delete_projects_by_pk(id: bigint!): projects
+  delete_functional_lines_by_pk(id: bigint!): functional_lines
+
+  """
+  delete data from the table: "request_types"
+  """
+  delete_request_types(
+    """filter the rows which have to be deleted"""
+    where: request_types_bool_exp!
+  ): request_types_mutation_response
+
+  """
+  delete single row from the table: "request_types"
+  """
+  delete_request_types_by_pk(id: bigint!): request_types
 
   """
   delete data from the table: "status"
@@ -124,33 +461,59 @@ type mutation_root {
   """
   delete single row from the table: "status"
   """
-  delete_status_by_pk(id: bigint!, name: String!): status
+  delete_status_by_pk(id: bigint!): status
 
   """
-  delete data from the table: "task"
+  delete data from the table: "trans_leave_request"
   """
-  delete_task(
+  delete_trans_leave_request(
     """filter the rows which have to be deleted"""
-    where: task_bool_exp!
-  ): task_mutation_response
+    where: trans_leave_request_bool_exp!
+  ): trans_leave_request_mutation_response
 
   """
-  delete single row from the table: "task"
+  delete data from the table: "trans_leave_request_attachments"
   """
-  delete_task_by_pk(id: bigint!): task
-
-  """
-  delete data from the table: "task_type"
-  """
-  delete_task_type(
+  delete_trans_leave_request_attachments(
     """filter the rows which have to be deleted"""
-    where: task_type_bool_exp!
-  ): task_type_mutation_response
+    where: trans_leave_request_attachments_bool_exp!
+  ): trans_leave_request_attachments_mutation_response
 
   """
-  delete single row from the table: "task_type"
+  delete single row from the table: "trans_leave_request_attachments"
   """
-  delete_task_type_by_pk(id: bigint!, name: String!): task_type
+  delete_trans_leave_request_attachments_by_pk(id: bigint!): trans_leave_request_attachments
+
+  """
+  delete single row from the table: "trans_leave_request"
+  """
+  delete_trans_leave_request_by_pk(id: bigint!): trans_leave_request
+
+  """
+  delete data from the table: "trans_leave_request_lines"
+  """
+  delete_trans_leave_request_lines(
+    """filter the rows which have to be deleted"""
+    where: trans_leave_request_lines_bool_exp!
+  ): trans_leave_request_lines_mutation_response
+
+  """
+  delete single row from the table: "trans_leave_request_lines"
+  """
+  delete_trans_leave_request_lines_by_pk(id: bigint!): trans_leave_request_lines
+
+  """
+  delete data from the table: "user_groups"
+  """
+  delete_user_groups(
+    """filter the rows which have to be deleted"""
+    where: user_groups_bool_exp!
+  ): user_groups_mutation_response
+
+  """
+  delete single row from the table: "user_groups"
+  """
+  delete_user_groups_by_pk(id: Int!): user_groups
 
   """
   delete data from the table: "users"
@@ -163,29 +526,64 @@ type mutation_root {
   """
   delete single row from the table: "users"
   """
-  delete_users_by_pk(id: bigint!, username: String!): users
+  delete_users_by_pk(id: bigint!): users
 
   """
-  insert data into the table: "projects"
+  delete data from the table: "users_leave_lines"
   """
-  insert_projects(
+  delete_users_leave_lines(
+    """filter the rows which have to be deleted"""
+    where: users_leave_lines_bool_exp!
+  ): users_leave_lines_mutation_response
+
+  """
+  delete single row from the table: "users_leave_lines"
+  """
+  delete_users_leave_lines_by_pk(id: bigint!): users_leave_lines
+
+  """
+  insert data into the table: "functional_lines"
+  """
+  insert_functional_lines(
     """the rows to be inserted"""
-    objects: [projects_insert_input!]!
+    objects: [functional_lines_insert_input!]!
 
     """on conflict condition"""
-    on_conflict: projects_on_conflict
-  ): projects_mutation_response
+    on_conflict: functional_lines_on_conflict
+  ): functional_lines_mutation_response
 
   """
-  insert a single row into the table: "projects"
+  insert a single row into the table: "functional_lines"
   """
-  insert_projects_one(
+  insert_functional_lines_one(
     """the row to be inserted"""
-    object: projects_insert_input!
+    object: functional_lines_insert_input!
 
     """on conflict condition"""
-    on_conflict: projects_on_conflict
-  ): projects
+    on_conflict: functional_lines_on_conflict
+  ): functional_lines
+
+  """
+  insert data into the table: "request_types"
+  """
+  insert_request_types(
+    """the rows to be inserted"""
+    objects: [request_types_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: request_types_on_conflict
+  ): request_types_mutation_response
+
+  """
+  insert a single row into the table: "request_types"
+  """
+  insert_request_types_one(
+    """the row to be inserted"""
+    object: request_types_insert_input!
+
+    """on conflict condition"""
+    on_conflict: request_types_on_conflict
+  ): request_types
 
   """
   insert data into the table: "status"
@@ -210,48 +608,92 @@ type mutation_root {
   ): status
 
   """
-  insert data into the table: "task"
+  insert data into the table: "trans_leave_request"
   """
-  insert_task(
+  insert_trans_leave_request(
     """the rows to be inserted"""
-    objects: [task_insert_input!]!
+    objects: [trans_leave_request_insert_input!]!
 
     """on conflict condition"""
-    on_conflict: task_on_conflict
-  ): task_mutation_response
+    on_conflict: trans_leave_request_on_conflict
+  ): trans_leave_request_mutation_response
 
   """
-  insert a single row into the table: "task"
+  insert data into the table: "trans_leave_request_attachments"
   """
-  insert_task_one(
-    """the row to be inserted"""
-    object: task_insert_input!
-
-    """on conflict condition"""
-    on_conflict: task_on_conflict
-  ): task
-
-  """
-  insert data into the table: "task_type"
-  """
-  insert_task_type(
+  insert_trans_leave_request_attachments(
     """the rows to be inserted"""
-    objects: [task_type_insert_input!]!
+    objects: [trans_leave_request_attachments_insert_input!]!
 
     """on conflict condition"""
-    on_conflict: task_type_on_conflict
-  ): task_type_mutation_response
+    on_conflict: trans_leave_request_attachments_on_conflict
+  ): trans_leave_request_attachments_mutation_response
 
   """
-  insert a single row into the table: "task_type"
+  insert a single row into the table: "trans_leave_request_attachments"
   """
-  insert_task_type_one(
+  insert_trans_leave_request_attachments_one(
     """the row to be inserted"""
-    object: task_type_insert_input!
+    object: trans_leave_request_attachments_insert_input!
 
     """on conflict condition"""
-    on_conflict: task_type_on_conflict
-  ): task_type
+    on_conflict: trans_leave_request_attachments_on_conflict
+  ): trans_leave_request_attachments
+
+  """
+  insert data into the table: "trans_leave_request_lines"
+  """
+  insert_trans_leave_request_lines(
+    """the rows to be inserted"""
+    objects: [trans_leave_request_lines_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: trans_leave_request_lines_on_conflict
+  ): trans_leave_request_lines_mutation_response
+
+  """
+  insert a single row into the table: "trans_leave_request_lines"
+  """
+  insert_trans_leave_request_lines_one(
+    """the row to be inserted"""
+    object: trans_leave_request_lines_insert_input!
+
+    """on conflict condition"""
+    on_conflict: trans_leave_request_lines_on_conflict
+  ): trans_leave_request_lines
+
+  """
+  insert a single row into the table: "trans_leave_request"
+  """
+  insert_trans_leave_request_one(
+    """the row to be inserted"""
+    object: trans_leave_request_insert_input!
+
+    """on conflict condition"""
+    on_conflict: trans_leave_request_on_conflict
+  ): trans_leave_request
+
+  """
+  insert data into the table: "user_groups"
+  """
+  insert_user_groups(
+    """the rows to be inserted"""
+    objects: [user_groups_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: user_groups_on_conflict
+  ): user_groups_mutation_response
+
+  """
+  insert a single row into the table: "user_groups"
+  """
+  insert_user_groups_one(
+    """the row to be inserted"""
+    object: user_groups_insert_input!
+
+    """on conflict condition"""
+    on_conflict: user_groups_on_conflict
+  ): user_groups
 
   """
   insert data into the table: "users"
@@ -265,6 +707,28 @@ type mutation_root {
   ): users_mutation_response
 
   """
+  insert data into the table: "users_leave_lines"
+  """
+  insert_users_leave_lines(
+    """the rows to be inserted"""
+    objects: [users_leave_lines_insert_input!]!
+
+    """on conflict condition"""
+    on_conflict: users_leave_lines_on_conflict
+  ): users_leave_lines_mutation_response
+
+  """
+  insert a single row into the table: "users_leave_lines"
+  """
+  insert_users_leave_lines_one(
+    """the row to be inserted"""
+    object: users_leave_lines_insert_input!
+
+    """on conflict condition"""
+    on_conflict: users_leave_lines_on_conflict
+  ): users_leave_lines
+
+  """
   insert a single row into the table: "users"
   """
   insert_users_one(
@@ -276,30 +740,56 @@ type mutation_root {
   ): users
 
   """
-  update data of the table: "projects"
+  update data of the table: "functional_lines"
   """
-  update_projects(
+  update_functional_lines(
     """increments the numeric columns with given value of the filtered values"""
-    _inc: projects_inc_input
+    _inc: functional_lines_inc_input
 
     """sets the columns of the filtered rows to the given values"""
-    _set: projects_set_input
+    _set: functional_lines_set_input
 
     """filter the rows which have to be updated"""
-    where: projects_bool_exp!
-  ): projects_mutation_response
+    where: functional_lines_bool_exp!
+  ): functional_lines_mutation_response
 
   """
-  update single row of the table: "projects"
+  update single row of the table: "functional_lines"
   """
-  update_projects_by_pk(
+  update_functional_lines_by_pk(
     """increments the numeric columns with given value of the filtered values"""
-    _inc: projects_inc_input
+    _inc: functional_lines_inc_input
 
     """sets the columns of the filtered rows to the given values"""
-    _set: projects_set_input
-    pk_columns: projects_pk_columns_input!
-  ): projects
+    _set: functional_lines_set_input
+    pk_columns: functional_lines_pk_columns_input!
+  ): functional_lines
+
+  """
+  update data of the table: "request_types"
+  """
+  update_request_types(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: request_types_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: request_types_set_input
+
+    """filter the rows which have to be updated"""
+    where: request_types_bool_exp!
+  ): request_types_mutation_response
+
+  """
+  update single row of the table: "request_types"
+  """
+  update_request_types_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: request_types_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: request_types_set_input
+    pk_columns: request_types_pk_columns_input!
+  ): request_types
 
   """
   update data of the table: "status"
@@ -328,56 +818,108 @@ type mutation_root {
   ): status
 
   """
-  update data of the table: "task"
+  update data of the table: "trans_leave_request"
   """
-  update_task(
+  update_trans_leave_request(
     """increments the numeric columns with given value of the filtered values"""
-    _inc: task_inc_input
+    _inc: trans_leave_request_inc_input
 
     """sets the columns of the filtered rows to the given values"""
-    _set: task_set_input
+    _set: trans_leave_request_set_input
 
     """filter the rows which have to be updated"""
-    where: task_bool_exp!
-  ): task_mutation_response
+    where: trans_leave_request_bool_exp!
+  ): trans_leave_request_mutation_response
 
   """
-  update single row of the table: "task"
+  update data of the table: "trans_leave_request_attachments"
   """
-  update_task_by_pk(
+  update_trans_leave_request_attachments(
     """increments the numeric columns with given value of the filtered values"""
-    _inc: task_inc_input
+    _inc: trans_leave_request_attachments_inc_input
 
     """sets the columns of the filtered rows to the given values"""
-    _set: task_set_input
-    pk_columns: task_pk_columns_input!
-  ): task
-
-  """
-  update data of the table: "task_type"
-  """
-  update_task_type(
-    """increments the numeric columns with given value of the filtered values"""
-    _inc: task_type_inc_input
-
-    """sets the columns of the filtered rows to the given values"""
-    _set: task_type_set_input
+    _set: trans_leave_request_attachments_set_input
 
     """filter the rows which have to be updated"""
-    where: task_type_bool_exp!
-  ): task_type_mutation_response
+    where: trans_leave_request_attachments_bool_exp!
+  ): trans_leave_request_attachments_mutation_response
 
   """
-  update single row of the table: "task_type"
+  update single row of the table: "trans_leave_request_attachments"
   """
-  update_task_type_by_pk(
+  update_trans_leave_request_attachments_by_pk(
     """increments the numeric columns with given value of the filtered values"""
-    _inc: task_type_inc_input
+    _inc: trans_leave_request_attachments_inc_input
 
     """sets the columns of the filtered rows to the given values"""
-    _set: task_type_set_input
-    pk_columns: task_type_pk_columns_input!
-  ): task_type
+    _set: trans_leave_request_attachments_set_input
+    pk_columns: trans_leave_request_attachments_pk_columns_input!
+  ): trans_leave_request_attachments
+
+  """
+  update single row of the table: "trans_leave_request"
+  """
+  update_trans_leave_request_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: trans_leave_request_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: trans_leave_request_set_input
+    pk_columns: trans_leave_request_pk_columns_input!
+  ): trans_leave_request
+
+  """
+  update data of the table: "trans_leave_request_lines"
+  """
+  update_trans_leave_request_lines(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: trans_leave_request_lines_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: trans_leave_request_lines_set_input
+
+    """filter the rows which have to be updated"""
+    where: trans_leave_request_lines_bool_exp!
+  ): trans_leave_request_lines_mutation_response
+
+  """
+  update single row of the table: "trans_leave_request_lines"
+  """
+  update_trans_leave_request_lines_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: trans_leave_request_lines_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: trans_leave_request_lines_set_input
+    pk_columns: trans_leave_request_lines_pk_columns_input!
+  ): trans_leave_request_lines
+
+  """
+  update data of the table: "user_groups"
+  """
+  update_user_groups(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: user_groups_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: user_groups_set_input
+
+    """filter the rows which have to be updated"""
+    where: user_groups_bool_exp!
+  ): user_groups_mutation_response
+
+  """
+  update single row of the table: "user_groups"
+  """
+  update_user_groups_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: user_groups_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: user_groups_set_input
+    pk_columns: user_groups_pk_columns_input!
+  ): user_groups
 
   """
   update data of the table: "users"
@@ -404,6 +946,32 @@ type mutation_root {
     _set: users_set_input
     pk_columns: users_pk_columns_input!
   ): users
+
+  """
+  update data of the table: "users_leave_lines"
+  """
+  update_users_leave_lines(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: users_leave_lines_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: users_leave_lines_set_input
+
+    """filter the rows which have to be updated"""
+    where: users_leave_lines_bool_exp!
+  ): users_leave_lines_mutation_response
+
+  """
+  update single row of the table: "users_leave_lines"
+  """
+  update_users_leave_lines_by_pk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: users_leave_lines_inc_input
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: users_leave_lines_set_input
+    pk_columns: users_leave_lines_pk_columns_input!
+  ): users_leave_lines
 }
 
 """column ordering options"""
@@ -427,260 +995,13 @@ enum order_by {
   desc_nulls_last
 }
 
-"""
-columns and relationships of "projects"
-"""
-type projects {
-  created_at: timestamptz!
-  id: bigint!
-  name: String!
-
-  """An object relationship"""
-  task_type: task_type
-  task_type_id: Int!
-  updated_at: timestamptz!
-}
-
-"""
-aggregated selection of "projects"
-"""
-type projects_aggregate {
-  aggregate: projects_aggregate_fields
-  nodes: [projects!]!
-}
-
-"""
-aggregate fields of "projects"
-"""
-type projects_aggregate_fields {
-  avg: projects_avg_fields
-  count(columns: [projects_select_column!], distinct: Boolean): Int!
-  max: projects_max_fields
-  min: projects_min_fields
-  stddev: projects_stddev_fields
-  stddev_pop: projects_stddev_pop_fields
-  stddev_samp: projects_stddev_samp_fields
-  sum: projects_sum_fields
-  var_pop: projects_var_pop_fields
-  var_samp: projects_var_samp_fields
-  variance: projects_variance_fields
-}
-
-"""aggregate avg on columns"""
-type projects_avg_fields {
-  id: Float
-  task_type_id: Float
-}
-
-"""
-Boolean expression to filter rows from the table "projects". All fields are combined with a logical 'AND'.
-"""
-input projects_bool_exp {
-  _and: [projects_bool_exp!]
-  _not: projects_bool_exp
-  _or: [projects_bool_exp!]
-  created_at: timestamptz_comparison_exp
-  id: bigint_comparison_exp
-  name: String_comparison_exp
-  task_type: task_type_bool_exp
-  task_type_id: Int_comparison_exp
-  updated_at: timestamptz_comparison_exp
-}
-
-"""
-unique or primary key constraints on table "projects"
-"""
-enum projects_constraint {
-  """unique or primary key constraint"""
-  projects_name_key
-
-  """unique or primary key constraint"""
-  projects_pkey
-}
-
-"""
-input type for incrementing numeric columns in table "projects"
-"""
-input projects_inc_input {
-  id: bigint
-  task_type_id: Int
-}
-
-"""
-input type for inserting data into table "projects"
-"""
-input projects_insert_input {
-  created_at: timestamptz
-  id: bigint
-  name: String
-  task_type: task_type_obj_rel_insert_input
-  task_type_id: Int
-  updated_at: timestamptz
-}
-
-"""aggregate max on columns"""
-type projects_max_fields {
-  created_at: timestamptz
-  id: bigint
-  name: String
-  task_type_id: Int
-  updated_at: timestamptz
-}
-
-"""aggregate min on columns"""
-type projects_min_fields {
-  created_at: timestamptz
-  id: bigint
-  name: String
-  task_type_id: Int
-  updated_at: timestamptz
-}
-
-"""
-response of any mutation on the table "projects"
-"""
-type projects_mutation_response {
-  """number of rows affected by the mutation"""
-  affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [projects!]!
-}
-
-"""
-input type for inserting object relation for remote table "projects"
-"""
-input projects_obj_rel_insert_input {
-  data: projects_insert_input!
-
-  """on conflict condition"""
-  on_conflict: projects_on_conflict
-}
-
-"""
-on conflict condition type for table "projects"
-"""
-input projects_on_conflict {
-  constraint: projects_constraint!
-  update_columns: [projects_update_column!]! = []
-  where: projects_bool_exp
-}
-
-"""Ordering options when selecting data from "projects"."""
-input projects_order_by {
-  created_at: order_by
-  id: order_by
-  name: order_by
-  task_type: task_type_order_by
-  task_type_id: order_by
-  updated_at: order_by
-}
-
-"""primary key columns input for table: projects"""
-input projects_pk_columns_input {
-  id: bigint!
-}
-
-"""
-select columns of table "projects"
-"""
-enum projects_select_column {
-  """column name"""
-  created_at
-
-  """column name"""
-  id
-
-  """column name"""
-  name
-
-  """column name"""
-  task_type_id
-
-  """column name"""
-  updated_at
-}
-
-"""
-input type for updating data in table "projects"
-"""
-input projects_set_input {
-  created_at: timestamptz
-  id: bigint
-  name: String
-  task_type_id: Int
-  updated_at: timestamptz
-}
-
-"""aggregate stddev on columns"""
-type projects_stddev_fields {
-  id: Float
-  task_type_id: Float
-}
-
-"""aggregate stddev_pop on columns"""
-type projects_stddev_pop_fields {
-  id: Float
-  task_type_id: Float
-}
-
-"""aggregate stddev_samp on columns"""
-type projects_stddev_samp_fields {
-  id: Float
-  task_type_id: Float
-}
-
-"""aggregate sum on columns"""
-type projects_sum_fields {
-  id: bigint
-  task_type_id: Int
-}
-
-"""
-update columns of table "projects"
-"""
-enum projects_update_column {
-  """column name"""
-  created_at
-
-  """column name"""
-  id
-
-  """column name"""
-  name
-
-  """column name"""
-  task_type_id
-
-  """column name"""
-  updated_at
-}
-
-"""aggregate var_pop on columns"""
-type projects_var_pop_fields {
-  id: Float
-  task_type_id: Float
-}
-
-"""aggregate var_samp on columns"""
-type projects_var_samp_fields {
-  id: Float
-  task_type_id: Float
-}
-
-"""aggregate variance on columns"""
-type projects_variance_fields {
-  id: Float
-  task_type_id: Float
-}
-
 type query_root {
   """
-  fetch data from the table: "projects"
+  fetch data from the table: "functional_lines"
   """
-  projects(
+  functional_lines(
     """distinct select on columns"""
-    distinct_on: [projects_select_column!]
+    distinct_on: [functional_lines_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -689,18 +1010,18 @@ type query_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [projects_order_by!]
+    order_by: [functional_lines_order_by!]
 
     """filter the rows returned"""
-    where: projects_bool_exp
-  ): [projects!]!
+    where: functional_lines_bool_exp
+  ): [functional_lines!]!
 
   """
-  fetch aggregated fields from the table: "projects"
+  fetch aggregated fields from the table: "functional_lines"
   """
-  projects_aggregate(
+  functional_lines_aggregate(
     """distinct select on columns"""
-    distinct_on: [projects_select_column!]
+    distinct_on: [functional_lines_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -709,14 +1030,59 @@ type query_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [projects_order_by!]
+    order_by: [functional_lines_order_by!]
 
     """filter the rows returned"""
-    where: projects_bool_exp
-  ): projects_aggregate!
+    where: functional_lines_bool_exp
+  ): functional_lines_aggregate!
 
-  """fetch data from the table: "projects" using primary key columns"""
-  projects_by_pk(id: bigint!): projects
+  """
+  fetch data from the table: "functional_lines" using primary key columns
+  """
+  functional_lines_by_pk(id: bigint!): functional_lines
+
+  """
+  fetch data from the table: "request_types"
+  """
+  request_types(
+    """distinct select on columns"""
+    distinct_on: [request_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [request_types_order_by!]
+
+    """filter the rows returned"""
+    where: request_types_bool_exp
+  ): [request_types!]!
+
+  """
+  fetch aggregated fields from the table: "request_types"
+  """
+  request_types_aggregate(
+    """distinct select on columns"""
+    distinct_on: [request_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [request_types_order_by!]
+
+    """filter the rows returned"""
+    where: request_types_bool_exp
+  ): request_types_aggregate!
+
+  """fetch data from the table: "request_types" using primary key columns"""
+  request_types_by_pk(id: bigint!): request_types
 
   """
   fetch data from the table: "status"
@@ -759,14 +1125,14 @@ type query_root {
   ): status_aggregate!
 
   """fetch data from the table: "status" using primary key columns"""
-  status_by_pk(id: bigint!, name: String!): status
+  status_by_pk(id: bigint!): status
 
   """
-  fetch data from the table: "task"
+  fetch data from the table: "trans_leave_request"
   """
-  task(
+  trans_leave_request(
     """distinct select on columns"""
-    distinct_on: [task_select_column!]
+    distinct_on: [trans_leave_request_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -775,18 +1141,18 @@ type query_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [task_order_by!]
+    order_by: [trans_leave_request_order_by!]
 
     """filter the rows returned"""
-    where: task_bool_exp
-  ): [task!]!
+    where: trans_leave_request_bool_exp
+  ): [trans_leave_request!]!
 
   """
-  fetch aggregated fields from the table: "task"
+  fetch aggregated fields from the table: "trans_leave_request"
   """
-  task_aggregate(
+  trans_leave_request_aggregate(
     """distinct select on columns"""
-    distinct_on: [task_select_column!]
+    distinct_on: [trans_leave_request_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -795,21 +1161,18 @@ type query_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [task_order_by!]
+    order_by: [trans_leave_request_order_by!]
 
     """filter the rows returned"""
-    where: task_bool_exp
-  ): task_aggregate!
-
-  """fetch data from the table: "task" using primary key columns"""
-  task_by_pk(id: bigint!): task
+    where: trans_leave_request_bool_exp
+  ): trans_leave_request_aggregate!
 
   """
-  fetch data from the table: "task_type"
+  fetch data from the table: "trans_leave_request_attachments"
   """
-  task_type(
+  trans_leave_request_attachments(
     """distinct select on columns"""
-    distinct_on: [task_type_select_column!]
+    distinct_on: [trans_leave_request_attachments_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -818,18 +1181,18 @@ type query_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [task_type_order_by!]
+    order_by: [trans_leave_request_attachments_order_by!]
 
     """filter the rows returned"""
-    where: task_type_bool_exp
-  ): [task_type!]!
+    where: trans_leave_request_attachments_bool_exp
+  ): [trans_leave_request_attachments!]!
 
   """
-  fetch aggregated fields from the table: "task_type"
+  fetch aggregated fields from the table: "trans_leave_request_attachments"
   """
-  task_type_aggregate(
+  trans_leave_request_attachments_aggregate(
     """distinct select on columns"""
-    distinct_on: [task_type_select_column!]
+    distinct_on: [trans_leave_request_attachments_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -838,18 +1201,111 @@ type query_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [task_type_order_by!]
+    order_by: [trans_leave_request_attachments_order_by!]
 
     """filter the rows returned"""
-    where: task_type_bool_exp
-  ): task_type_aggregate!
-
-  """fetch data from the table: "task_type" using primary key columns"""
-  task_type_by_pk(id: bigint!, name: String!): task_type
+    where: trans_leave_request_attachments_bool_exp
+  ): trans_leave_request_attachments_aggregate!
 
   """
-  fetch data from the table: "users"
+  fetch data from the table: "trans_leave_request_attachments" using primary key columns
   """
+  trans_leave_request_attachments_by_pk(id: bigint!): trans_leave_request_attachments
+
+  """
+  fetch data from the table: "trans_leave_request" using primary key columns
+  """
+  trans_leave_request_by_pk(id: bigint!): trans_leave_request
+
+  """
+  fetch data from the table: "trans_leave_request_lines"
+  """
+  trans_leave_request_lines(
+    """distinct select on columns"""
+    distinct_on: [trans_leave_request_lines_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [trans_leave_request_lines_order_by!]
+
+    """filter the rows returned"""
+    where: trans_leave_request_lines_bool_exp
+  ): [trans_leave_request_lines!]!
+
+  """
+  fetch aggregated fields from the table: "trans_leave_request_lines"
+  """
+  trans_leave_request_lines_aggregate(
+    """distinct select on columns"""
+    distinct_on: [trans_leave_request_lines_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [trans_leave_request_lines_order_by!]
+
+    """filter the rows returned"""
+    where: trans_leave_request_lines_bool_exp
+  ): trans_leave_request_lines_aggregate!
+
+  """
+  fetch data from the table: "trans_leave_request_lines" using primary key columns
+  """
+  trans_leave_request_lines_by_pk(id: bigint!): trans_leave_request_lines
+
+  """
+  fetch data from the table: "user_groups"
+  """
+  user_groups(
+    """distinct select on columns"""
+    distinct_on: [user_groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_groups_order_by!]
+
+    """filter the rows returned"""
+    where: user_groups_bool_exp
+  ): [user_groups!]!
+
+  """
+  fetch aggregated fields from the table: "user_groups"
+  """
+  user_groups_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_groups_order_by!]
+
+    """filter the rows returned"""
+    where: user_groups_bool_exp
+  ): user_groups_aggregate!
+
+  """fetch data from the table: "user_groups" using primary key columns"""
+  user_groups_by_pk(id: Int!): user_groups
+
+  """An array relationship"""
   users(
     """distinct select on columns"""
     distinct_on: [users_select_column!]
@@ -867,9 +1323,7 @@ type query_root {
     where: users_bool_exp
   ): [users!]!
 
-  """
-  fetch aggregated fields from the table: "users"
-  """
+  """An aggregate relationship"""
   users_aggregate(
     """distinct select on columns"""
     distinct_on: [users_select_column!]
@@ -888,15 +1342,314 @@ type query_root {
   ): users_aggregate!
 
   """fetch data from the table: "users" using primary key columns"""
-  users_by_pk(id: bigint!, username: String!): users
+  users_by_pk(id: bigint!): users
+
+  """
+  fetch data from the table: "users_leave_lines"
+  """
+  users_leave_lines(
+    """distinct select on columns"""
+    distinct_on: [users_leave_lines_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_leave_lines_order_by!]
+
+    """filter the rows returned"""
+    where: users_leave_lines_bool_exp
+  ): [users_leave_lines!]!
+
+  """
+  fetch aggregated fields from the table: "users_leave_lines"
+  """
+  users_leave_lines_aggregate(
+    """distinct select on columns"""
+    distinct_on: [users_leave_lines_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_leave_lines_order_by!]
+
+    """filter the rows returned"""
+    where: users_leave_lines_bool_exp
+  ): users_leave_lines_aggregate!
+
+  """
+  fetch data from the table: "users_leave_lines" using primary key columns
+  """
+  users_leave_lines_by_pk(id: bigint!): users_leave_lines
 }
 
-"List of Status\n\n\ncolumns and relationships of \"status\"\n"
+"""
+columns and relationships of "request_types"
+"""
+type request_types {
+  active: Boolean!
+  id: bigint!
+  key: String!
+  name: String!
+}
+
+"""
+aggregated selection of "request_types"
+"""
+type request_types_aggregate {
+  aggregate: request_types_aggregate_fields
+  nodes: [request_types!]!
+}
+
+"""
+aggregate fields of "request_types"
+"""
+type request_types_aggregate_fields {
+  avg: request_types_avg_fields
+  count(columns: [request_types_select_column!], distinct: Boolean): Int!
+  max: request_types_max_fields
+  min: request_types_min_fields
+  stddev: request_types_stddev_fields
+  stddev_pop: request_types_stddev_pop_fields
+  stddev_samp: request_types_stddev_samp_fields
+  sum: request_types_sum_fields
+  var_pop: request_types_var_pop_fields
+  var_samp: request_types_var_samp_fields
+  variance: request_types_variance_fields
+}
+
+"""aggregate avg on columns"""
+type request_types_avg_fields {
+  id: Float
+}
+
+"""
+Boolean expression to filter rows from the table "request_types". All fields are combined with a logical 'AND'.
+"""
+input request_types_bool_exp {
+  _and: [request_types_bool_exp!]
+  _not: request_types_bool_exp
+  _or: [request_types_bool_exp!]
+  active: Boolean_comparison_exp
+  id: bigint_comparison_exp
+  key: String_comparison_exp
+  name: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "request_types"
+"""
+enum request_types_constraint {
+  """unique or primary key constraint"""
+  request_types_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "request_types"
+"""
+input request_types_inc_input {
+  id: bigint
+}
+
+"""
+input type for inserting data into table "request_types"
+"""
+input request_types_insert_input {
+  active: Boolean
+  id: bigint
+  key: String
+  name: String
+}
+
+"""aggregate max on columns"""
+type request_types_max_fields {
+  id: bigint
+  key: String
+  name: String
+}
+
+"""aggregate min on columns"""
+type request_types_min_fields {
+  id: bigint
+  key: String
+  name: String
+}
+
+"""
+response of any mutation on the table "request_types"
+"""
+type request_types_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [request_types!]!
+}
+
+"""
+input type for inserting object relation for remote table "request_types"
+"""
+input request_types_obj_rel_insert_input {
+  data: request_types_insert_input!
+
+  """on conflict condition"""
+  on_conflict: request_types_on_conflict
+}
+
+"""
+on conflict condition type for table "request_types"
+"""
+input request_types_on_conflict {
+  constraint: request_types_constraint!
+  update_columns: [request_types_update_column!]! = []
+  where: request_types_bool_exp
+}
+
+"""Ordering options when selecting data from "request_types"."""
+input request_types_order_by {
+  active: order_by
+  id: order_by
+  key: order_by
+  name: order_by
+}
+
+"""primary key columns input for table: request_types"""
+input request_types_pk_columns_input {
+  id: bigint!
+}
+
+"""
+select columns of table "request_types"
+"""
+enum request_types_select_column {
+  """column name"""
+  active
+
+  """column name"""
+  id
+
+  """column name"""
+  key
+
+  """column name"""
+  name
+}
+
+"""
+input type for updating data in table "request_types"
+"""
+input request_types_set_input {
+  active: Boolean
+  id: bigint
+  key: String
+  name: String
+}
+
+"""aggregate stddev on columns"""
+type request_types_stddev_fields {
+  id: Float
+}
+
+"""aggregate stddev_pop on columns"""
+type request_types_stddev_pop_fields {
+  id: Float
+}
+
+"""aggregate stddev_samp on columns"""
+type request_types_stddev_samp_fields {
+  id: Float
+}
+
+"""aggregate sum on columns"""
+type request_types_sum_fields {
+  id: bigint
+}
+
+"""
+update columns of table "request_types"
+"""
+enum request_types_update_column {
+  """column name"""
+  active
+
+  """column name"""
+  id
+
+  """column name"""
+  key
+
+  """column name"""
+  name
+}
+
+"""aggregate var_pop on columns"""
+type request_types_var_pop_fields {
+  id: Float
+}
+
+"""aggregate var_samp on columns"""
+type request_types_var_samp_fields {
+  id: Float
+}
+
+"""aggregate variance on columns"""
+type request_types_variance_fields {
+  id: Float
+}
+
+"""
+columns and relationships of "status"
+"""
 type status {
-  color: String
+  active: Boolean!
   created_at: timestamptz!
   id: bigint!
   name: String!
+  sequence: Int!
+  trans_leave_request_ids: Int!
+
+  """An array relationship"""
+  trans_leave_requests(
+    """distinct select on columns"""
+    distinct_on: [trans_leave_request_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [trans_leave_request_order_by!]
+
+    """filter the rows returned"""
+    where: trans_leave_request_bool_exp
+  ): [trans_leave_request!]!
+
+  """An aggregate relationship"""
+  trans_leave_requests_aggregate(
+    """distinct select on columns"""
+    distinct_on: [trans_leave_request_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [trans_leave_request_order_by!]
+
+    """filter the rows returned"""
+    where: trans_leave_request_bool_exp
+  ): trans_leave_request_aggregate!
   updated_at: timestamptz!
 }
 
@@ -928,6 +1681,8 @@ type status_aggregate_fields {
 """aggregate avg on columns"""
 type status_avg_fields {
   id: Float
+  sequence: Float
+  trans_leave_request_ids: Float
 }
 
 """
@@ -937,10 +1692,13 @@ input status_bool_exp {
   _and: [status_bool_exp!]
   _not: status_bool_exp
   _or: [status_bool_exp!]
-  color: String_comparison_exp
+  active: Boolean_comparison_exp
   created_at: timestamptz_comparison_exp
   id: bigint_comparison_exp
   name: String_comparison_exp
+  sequence: Int_comparison_exp
+  trans_leave_request_ids: Int_comparison_exp
+  trans_leave_requests: trans_leave_request_bool_exp
   updated_at: timestamptz_comparison_exp
 }
 
@@ -948,9 +1706,6 @@ input status_bool_exp {
 unique or primary key constraints on table "status"
 """
 enum status_constraint {
-  """unique or primary key constraint"""
-  status_id_key
-
   """unique or primary key constraint"""
   status_pkey
 }
@@ -960,34 +1715,41 @@ input type for incrementing numeric columns in table "status"
 """
 input status_inc_input {
   id: bigint
+  sequence: Int
+  trans_leave_request_ids: Int
 }
 
 """
 input type for inserting data into table "status"
 """
 input status_insert_input {
-  color: String
+  active: Boolean
   created_at: timestamptz
   id: bigint
   name: String
+  sequence: Int
+  trans_leave_request_ids: Int
+  trans_leave_requests: trans_leave_request_arr_rel_insert_input
   updated_at: timestamptz
 }
 
 """aggregate max on columns"""
 type status_max_fields {
-  color: String
   created_at: timestamptz
   id: bigint
   name: String
+  sequence: Int
+  trans_leave_request_ids: Int
   updated_at: timestamptz
 }
 
 """aggregate min on columns"""
 type status_min_fields {
-  color: String
   created_at: timestamptz
   id: bigint
   name: String
+  sequence: Int
+  trans_leave_request_ids: Int
   updated_at: timestamptz
 }
 
@@ -1023,17 +1785,19 @@ input status_on_conflict {
 
 """Ordering options when selecting data from "status"."""
 input status_order_by {
-  color: order_by
+  active: order_by
   created_at: order_by
   id: order_by
   name: order_by
+  sequence: order_by
+  trans_leave_request_ids: order_by
+  trans_leave_requests_aggregate: trans_leave_request_aggregate_order_by
   updated_at: order_by
 }
 
 """primary key columns input for table: status"""
 input status_pk_columns_input {
   id: bigint!
-  name: String!
 }
 
 """
@@ -1041,7 +1805,7 @@ select columns of table "status"
 """
 enum status_select_column {
   """column name"""
-  color
+  active
 
   """column name"""
   created_at
@@ -1051,6 +1815,12 @@ enum status_select_column {
 
   """column name"""
   name
+
+  """column name"""
+  sequence
+
+  """column name"""
+  trans_leave_request_ids
 
   """column name"""
   updated_at
@@ -1060,31 +1830,41 @@ enum status_select_column {
 input type for updating data in table "status"
 """
 input status_set_input {
-  color: String
+  active: Boolean
   created_at: timestamptz
   id: bigint
   name: String
+  sequence: Int
+  trans_leave_request_ids: Int
   updated_at: timestamptz
 }
 
 """aggregate stddev on columns"""
 type status_stddev_fields {
   id: Float
+  sequence: Float
+  trans_leave_request_ids: Float
 }
 
 """aggregate stddev_pop on columns"""
 type status_stddev_pop_fields {
   id: Float
+  sequence: Float
+  trans_leave_request_ids: Float
 }
 
 """aggregate stddev_samp on columns"""
 type status_stddev_samp_fields {
   id: Float
+  sequence: Float
+  trans_leave_request_ids: Float
 }
 
 """aggregate sum on columns"""
 type status_sum_fields {
   id: bigint
+  sequence: Int
+  trans_leave_request_ids: Int
 }
 
 """
@@ -1092,7 +1872,7 @@ update columns of table "status"
 """
 enum status_update_column {
   """column name"""
-  color
+  active
 
   """column name"""
   created_at
@@ -1104,31 +1884,43 @@ enum status_update_column {
   name
 
   """column name"""
+  sequence
+
+  """column name"""
+  trans_leave_request_ids
+
+  """column name"""
   updated_at
 }
 
 """aggregate var_pop on columns"""
 type status_var_pop_fields {
   id: Float
+  sequence: Float
+  trans_leave_request_ids: Float
 }
 
 """aggregate var_samp on columns"""
 type status_var_samp_fields {
   id: Float
+  sequence: Float
+  trans_leave_request_ids: Float
 }
 
 """aggregate variance on columns"""
 type status_variance_fields {
   id: Float
+  sequence: Float
+  trans_leave_request_ids: Float
 }
 
 type subscription_root {
   """
-  fetch data from the table: "projects"
+  fetch data from the table: "functional_lines"
   """
-  projects(
+  functional_lines(
     """distinct select on columns"""
-    distinct_on: [projects_select_column!]
+    distinct_on: [functional_lines_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -1137,18 +1929,18 @@ type subscription_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [projects_order_by!]
+    order_by: [functional_lines_order_by!]
 
     """filter the rows returned"""
-    where: projects_bool_exp
-  ): [projects!]!
+    where: functional_lines_bool_exp
+  ): [functional_lines!]!
 
   """
-  fetch aggregated fields from the table: "projects"
+  fetch aggregated fields from the table: "functional_lines"
   """
-  projects_aggregate(
+  functional_lines_aggregate(
     """distinct select on columns"""
-    distinct_on: [projects_select_column!]
+    distinct_on: [functional_lines_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -1157,14 +1949,59 @@ type subscription_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [projects_order_by!]
+    order_by: [functional_lines_order_by!]
 
     """filter the rows returned"""
-    where: projects_bool_exp
-  ): projects_aggregate!
+    where: functional_lines_bool_exp
+  ): functional_lines_aggregate!
 
-  """fetch data from the table: "projects" using primary key columns"""
-  projects_by_pk(id: bigint!): projects
+  """
+  fetch data from the table: "functional_lines" using primary key columns
+  """
+  functional_lines_by_pk(id: bigint!): functional_lines
+
+  """
+  fetch data from the table: "request_types"
+  """
+  request_types(
+    """distinct select on columns"""
+    distinct_on: [request_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [request_types_order_by!]
+
+    """filter the rows returned"""
+    where: request_types_bool_exp
+  ): [request_types!]!
+
+  """
+  fetch aggregated fields from the table: "request_types"
+  """
+  request_types_aggregate(
+    """distinct select on columns"""
+    distinct_on: [request_types_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [request_types_order_by!]
+
+    """filter the rows returned"""
+    where: request_types_bool_exp
+  ): request_types_aggregate!
+
+  """fetch data from the table: "request_types" using primary key columns"""
+  request_types_by_pk(id: bigint!): request_types
 
   """
   fetch data from the table: "status"
@@ -1207,14 +2044,14 @@ type subscription_root {
   ): status_aggregate!
 
   """fetch data from the table: "status" using primary key columns"""
-  status_by_pk(id: bigint!, name: String!): status
+  status_by_pk(id: bigint!): status
 
   """
-  fetch data from the table: "task"
+  fetch data from the table: "trans_leave_request"
   """
-  task(
+  trans_leave_request(
     """distinct select on columns"""
-    distinct_on: [task_select_column!]
+    distinct_on: [trans_leave_request_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -1223,18 +2060,18 @@ type subscription_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [task_order_by!]
+    order_by: [trans_leave_request_order_by!]
 
     """filter the rows returned"""
-    where: task_bool_exp
-  ): [task!]!
+    where: trans_leave_request_bool_exp
+  ): [trans_leave_request!]!
 
   """
-  fetch aggregated fields from the table: "task"
+  fetch aggregated fields from the table: "trans_leave_request"
   """
-  task_aggregate(
+  trans_leave_request_aggregate(
     """distinct select on columns"""
-    distinct_on: [task_select_column!]
+    distinct_on: [trans_leave_request_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -1243,21 +2080,18 @@ type subscription_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [task_order_by!]
+    order_by: [trans_leave_request_order_by!]
 
     """filter the rows returned"""
-    where: task_bool_exp
-  ): task_aggregate!
-
-  """fetch data from the table: "task" using primary key columns"""
-  task_by_pk(id: bigint!): task
+    where: trans_leave_request_bool_exp
+  ): trans_leave_request_aggregate!
 
   """
-  fetch data from the table: "task_type"
+  fetch data from the table: "trans_leave_request_attachments"
   """
-  task_type(
+  trans_leave_request_attachments(
     """distinct select on columns"""
-    distinct_on: [task_type_select_column!]
+    distinct_on: [trans_leave_request_attachments_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -1266,18 +2100,18 @@ type subscription_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [task_type_order_by!]
+    order_by: [trans_leave_request_attachments_order_by!]
 
     """filter the rows returned"""
-    where: task_type_bool_exp
-  ): [task_type!]!
+    where: trans_leave_request_attachments_bool_exp
+  ): [trans_leave_request_attachments!]!
 
   """
-  fetch aggregated fields from the table: "task_type"
+  fetch aggregated fields from the table: "trans_leave_request_attachments"
   """
-  task_type_aggregate(
+  trans_leave_request_attachments_aggregate(
     """distinct select on columns"""
-    distinct_on: [task_type_select_column!]
+    distinct_on: [trans_leave_request_attachments_select_column!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -1286,18 +2120,111 @@ type subscription_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    order_by: [task_type_order_by!]
+    order_by: [trans_leave_request_attachments_order_by!]
 
     """filter the rows returned"""
-    where: task_type_bool_exp
-  ): task_type_aggregate!
-
-  """fetch data from the table: "task_type" using primary key columns"""
-  task_type_by_pk(id: bigint!, name: String!): task_type
+    where: trans_leave_request_attachments_bool_exp
+  ): trans_leave_request_attachments_aggregate!
 
   """
-  fetch data from the table: "users"
+  fetch data from the table: "trans_leave_request_attachments" using primary key columns
   """
+  trans_leave_request_attachments_by_pk(id: bigint!): trans_leave_request_attachments
+
+  """
+  fetch data from the table: "trans_leave_request" using primary key columns
+  """
+  trans_leave_request_by_pk(id: bigint!): trans_leave_request
+
+  """
+  fetch data from the table: "trans_leave_request_lines"
+  """
+  trans_leave_request_lines(
+    """distinct select on columns"""
+    distinct_on: [trans_leave_request_lines_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [trans_leave_request_lines_order_by!]
+
+    """filter the rows returned"""
+    where: trans_leave_request_lines_bool_exp
+  ): [trans_leave_request_lines!]!
+
+  """
+  fetch aggregated fields from the table: "trans_leave_request_lines"
+  """
+  trans_leave_request_lines_aggregate(
+    """distinct select on columns"""
+    distinct_on: [trans_leave_request_lines_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [trans_leave_request_lines_order_by!]
+
+    """filter the rows returned"""
+    where: trans_leave_request_lines_bool_exp
+  ): trans_leave_request_lines_aggregate!
+
+  """
+  fetch data from the table: "trans_leave_request_lines" using primary key columns
+  """
+  trans_leave_request_lines_by_pk(id: bigint!): trans_leave_request_lines
+
+  """
+  fetch data from the table: "user_groups"
+  """
+  user_groups(
+    """distinct select on columns"""
+    distinct_on: [user_groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_groups_order_by!]
+
+    """filter the rows returned"""
+    where: user_groups_bool_exp
+  ): [user_groups!]!
+
+  """
+  fetch aggregated fields from the table: "user_groups"
+  """
+  user_groups_aggregate(
+    """distinct select on columns"""
+    distinct_on: [user_groups_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [user_groups_order_by!]
+
+    """filter the rows returned"""
+    where: user_groups_bool_exp
+  ): user_groups_aggregate!
+
+  """fetch data from the table: "user_groups" using primary key columns"""
+  user_groups_by_pk(id: Int!): user_groups
+
+  """An array relationship"""
   users(
     """distinct select on columns"""
     distinct_on: [users_select_column!]
@@ -1315,9 +2242,7 @@ type subscription_root {
     where: users_bool_exp
   ): [users!]!
 
-  """
-  fetch aggregated fields from the table: "users"
-  """
+  """An aggregate relationship"""
   users_aggregate(
     """distinct select on columns"""
     distinct_on: [users_select_column!]
@@ -1336,702 +2261,52 @@ type subscription_root {
   ): users_aggregate!
 
   """fetch data from the table: "users" using primary key columns"""
-  users_by_pk(id: bigint!, username: String!): users
-}
-
-"List of Tasks\n\n\ncolumns and relationships of \"task\"\n"
-type task {
-  created_at: timestamptz!
-  description: String
-  id: bigint!
-  name: String!
-
-  """An object relationship"""
-  project: projects
-  project_id: Int
-
-  """An object relationship"""
-  status: status
-  status_id: Int!
-
-  """An object relationship"""
-  task_type: task_type
-  task_type_id: Int!
-  updated_at: timestamptz!
-
-  """An object relationship"""
-  user: users
-  user_id: Int!
-}
-
-"""
-aggregated selection of "task"
-"""
-type task_aggregate {
-  aggregate: task_aggregate_fields
-  nodes: [task!]!
-}
-
-"""
-aggregate fields of "task"
-"""
-type task_aggregate_fields {
-  avg: task_avg_fields
-  count(columns: [task_select_column!], distinct: Boolean): Int!
-  max: task_max_fields
-  min: task_min_fields
-  stddev: task_stddev_fields
-  stddev_pop: task_stddev_pop_fields
-  stddev_samp: task_stddev_samp_fields
-  sum: task_sum_fields
-  var_pop: task_var_pop_fields
-  var_samp: task_var_samp_fields
-  variance: task_variance_fields
-}
-
-"""
-order by aggregate values of table "task"
-"""
-input task_aggregate_order_by {
-  avg: task_avg_order_by
-  count: order_by
-  max: task_max_order_by
-  min: task_min_order_by
-  stddev: task_stddev_order_by
-  stddev_pop: task_stddev_pop_order_by
-  stddev_samp: task_stddev_samp_order_by
-  sum: task_sum_order_by
-  var_pop: task_var_pop_order_by
-  var_samp: task_var_samp_order_by
-  variance: task_variance_order_by
-}
-
-"""
-input type for inserting array relation for remote table "task"
-"""
-input task_arr_rel_insert_input {
-  data: [task_insert_input!]!
-
-  """on conflict condition"""
-  on_conflict: task_on_conflict
-}
-
-"""aggregate avg on columns"""
-type task_avg_fields {
-  id: Float
-  project_id: Float
-  status_id: Float
-  task_type_id: Float
-  user_id: Float
-}
-
-"""
-order by avg() on columns of table "task"
-"""
-input task_avg_order_by {
-  id: order_by
-  project_id: order_by
-  status_id: order_by
-  task_type_id: order_by
-  user_id: order_by
-}
-
-"""
-Boolean expression to filter rows from the table "task". All fields are combined with a logical 'AND'.
-"""
-input task_bool_exp {
-  _and: [task_bool_exp!]
-  _not: task_bool_exp
-  _or: [task_bool_exp!]
-  created_at: timestamptz_comparison_exp
-  description: String_comparison_exp
-  id: bigint_comparison_exp
-  name: String_comparison_exp
-  project: projects_bool_exp
-  project_id: Int_comparison_exp
-  status: status_bool_exp
-  status_id: Int_comparison_exp
-  task_type: task_type_bool_exp
-  task_type_id: Int_comparison_exp
-  updated_at: timestamptz_comparison_exp
-  user: users_bool_exp
-  user_id: Int_comparison_exp
-}
-
-"""
-unique or primary key constraints on table "task"
-"""
-enum task_constraint {
-  """unique or primary key constraint"""
-  task_pkey
-}
-
-"""
-input type for incrementing numeric columns in table "task"
-"""
-input task_inc_input {
-  id: bigint
-  project_id: Int
-  status_id: Int
-  task_type_id: Int
-  user_id: Int
-}
-
-"""
-input type for inserting data into table "task"
-"""
-input task_insert_input {
-  created_at: timestamptz
-  description: String
-  id: bigint
-  name: String
-  project: projects_obj_rel_insert_input
-  project_id: Int
-  status: status_obj_rel_insert_input
-  status_id: Int
-  task_type: task_type_obj_rel_insert_input
-  task_type_id: Int
-  updated_at: timestamptz
-  user: users_obj_rel_insert_input
-  user_id: Int
-}
-
-"""aggregate max on columns"""
-type task_max_fields {
-  created_at: timestamptz
-  description: String
-  id: bigint
-  name: String
-  project_id: Int
-  status_id: Int
-  task_type_id: Int
-  updated_at: timestamptz
-  user_id: Int
-}
-
-"""
-order by max() on columns of table "task"
-"""
-input task_max_order_by {
-  created_at: order_by
-  description: order_by
-  id: order_by
-  name: order_by
-  project_id: order_by
-  status_id: order_by
-  task_type_id: order_by
-  updated_at: order_by
-  user_id: order_by
-}
-
-"""aggregate min on columns"""
-type task_min_fields {
-  created_at: timestamptz
-  description: String
-  id: bigint
-  name: String
-  project_id: Int
-  status_id: Int
-  task_type_id: Int
-  updated_at: timestamptz
-  user_id: Int
-}
-
-"""
-order by min() on columns of table "task"
-"""
-input task_min_order_by {
-  created_at: order_by
-  description: order_by
-  id: order_by
-  name: order_by
-  project_id: order_by
-  status_id: order_by
-  task_type_id: order_by
-  updated_at: order_by
-  user_id: order_by
-}
-
-"""
-response of any mutation on the table "task"
-"""
-type task_mutation_response {
-  """number of rows affected by the mutation"""
-  affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [task!]!
-}
-
-"""
-on conflict condition type for table "task"
-"""
-input task_on_conflict {
-  constraint: task_constraint!
-  update_columns: [task_update_column!]! = []
-  where: task_bool_exp
-}
-
-"""Ordering options when selecting data from "task"."""
-input task_order_by {
-  created_at: order_by
-  description: order_by
-  id: order_by
-  name: order_by
-  project: projects_order_by
-  project_id: order_by
-  status: status_order_by
-  status_id: order_by
-  task_type: task_type_order_by
-  task_type_id: order_by
-  updated_at: order_by
-  user: users_order_by
-  user_id: order_by
-}
-
-"""primary key columns input for table: task"""
-input task_pk_columns_input {
-  id: bigint!
-}
-
-"""
-select columns of table "task"
-"""
-enum task_select_column {
-  """column name"""
-  created_at
-
-  """column name"""
-  description
-
-  """column name"""
-  id
-
-  """column name"""
-  name
-
-  """column name"""
-  project_id
-
-  """column name"""
-  status_id
-
-  """column name"""
-  task_type_id
-
-  """column name"""
-  updated_at
-
-  """column name"""
-  user_id
-}
-
-"""
-input type for updating data in table "task"
-"""
-input task_set_input {
-  created_at: timestamptz
-  description: String
-  id: bigint
-  name: String
-  project_id: Int
-  status_id: Int
-  task_type_id: Int
-  updated_at: timestamptz
-  user_id: Int
-}
-
-"""aggregate stddev on columns"""
-type task_stddev_fields {
-  id: Float
-  project_id: Float
-  status_id: Float
-  task_type_id: Float
-  user_id: Float
-}
-
-"""
-order by stddev() on columns of table "task"
-"""
-input task_stddev_order_by {
-  id: order_by
-  project_id: order_by
-  status_id: order_by
-  task_type_id: order_by
-  user_id: order_by
-}
-
-"""aggregate stddev_pop on columns"""
-type task_stddev_pop_fields {
-  id: Float
-  project_id: Float
-  status_id: Float
-  task_type_id: Float
-  user_id: Float
-}
-
-"""
-order by stddev_pop() on columns of table "task"
-"""
-input task_stddev_pop_order_by {
-  id: order_by
-  project_id: order_by
-  status_id: order_by
-  task_type_id: order_by
-  user_id: order_by
-}
-
-"""aggregate stddev_samp on columns"""
-type task_stddev_samp_fields {
-  id: Float
-  project_id: Float
-  status_id: Float
-  task_type_id: Float
-  user_id: Float
-}
-
-"""
-order by stddev_samp() on columns of table "task"
-"""
-input task_stddev_samp_order_by {
-  id: order_by
-  project_id: order_by
-  status_id: order_by
-  task_type_id: order_by
-  user_id: order_by
-}
-
-"""aggregate sum on columns"""
-type task_sum_fields {
-  id: bigint
-  project_id: Int
-  status_id: Int
-  task_type_id: Int
-  user_id: Int
-}
-
-"""
-order by sum() on columns of table "task"
-"""
-input task_sum_order_by {
-  id: order_by
-  project_id: order_by
-  status_id: order_by
-  task_type_id: order_by
-  user_id: order_by
-}
-
-"List of Task Types\n\n\ncolumns and relationships of \"task_type\"\n"
-type task_type {
-  created_at: timestamptz!
-  id: bigint!
-  name: String!
-  updated_at: timestamptz!
-}
-
-"""
-aggregated selection of "task_type"
-"""
-type task_type_aggregate {
-  aggregate: task_type_aggregate_fields
-  nodes: [task_type!]!
-}
-
-"""
-aggregate fields of "task_type"
-"""
-type task_type_aggregate_fields {
-  avg: task_type_avg_fields
-  count(columns: [task_type_select_column!], distinct: Boolean): Int!
-  max: task_type_max_fields
-  min: task_type_min_fields
-  stddev: task_type_stddev_fields
-  stddev_pop: task_type_stddev_pop_fields
-  stddev_samp: task_type_stddev_samp_fields
-  sum: task_type_sum_fields
-  var_pop: task_type_var_pop_fields
-  var_samp: task_type_var_samp_fields
-  variance: task_type_variance_fields
-}
-
-"""aggregate avg on columns"""
-type task_type_avg_fields {
-  id: Float
-}
-
-"""
-Boolean expression to filter rows from the table "task_type". All fields are combined with a logical 'AND'.
-"""
-input task_type_bool_exp {
-  _and: [task_type_bool_exp!]
-  _not: task_type_bool_exp
-  _or: [task_type_bool_exp!]
-  created_at: timestamptz_comparison_exp
-  id: bigint_comparison_exp
-  name: String_comparison_exp
-  updated_at: timestamptz_comparison_exp
-}
-
-"""
-unique or primary key constraints on table "task_type"
-"""
-enum task_type_constraint {
-  """unique or primary key constraint"""
-  task_type_id_key
-
-  """unique or primary key constraint"""
-  task_type_name_key
-
-  """unique or primary key constraint"""
-  task_type_pkey
-}
-
-"""
-input type for incrementing numeric columns in table "task_type"
-"""
-input task_type_inc_input {
-  id: bigint
-}
-
-"""
-input type for inserting data into table "task_type"
-"""
-input task_type_insert_input {
-  created_at: timestamptz
-  id: bigint
-  name: String
-  updated_at: timestamptz
-}
-
-"""aggregate max on columns"""
-type task_type_max_fields {
-  created_at: timestamptz
-  id: bigint
-  name: String
-  updated_at: timestamptz
-}
-
-"""aggregate min on columns"""
-type task_type_min_fields {
-  created_at: timestamptz
-  id: bigint
-  name: String
-  updated_at: timestamptz
-}
-
-"""
-response of any mutation on the table "task_type"
-"""
-type task_type_mutation_response {
-  """number of rows affected by the mutation"""
-  affected_rows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [task_type!]!
-}
-
-"""
-input type for inserting object relation for remote table "task_type"
-"""
-input task_type_obj_rel_insert_input {
-  data: task_type_insert_input!
-
-  """on conflict condition"""
-  on_conflict: task_type_on_conflict
-}
-
-"""
-on conflict condition type for table "task_type"
-"""
-input task_type_on_conflict {
-  constraint: task_type_constraint!
-  update_columns: [task_type_update_column!]! = []
-  where: task_type_bool_exp
-}
-
-"""Ordering options when selecting data from "task_type"."""
-input task_type_order_by {
-  created_at: order_by
-  id: order_by
-  name: order_by
-  updated_at: order_by
-}
-
-"""primary key columns input for table: task_type"""
-input task_type_pk_columns_input {
-  id: bigint!
-  name: String!
-}
-
-"""
-select columns of table "task_type"
-"""
-enum task_type_select_column {
-  """column name"""
-  created_at
-
-  """column name"""
-  id
-
-  """column name"""
-  name
-
-  """column name"""
-  updated_at
-}
-
-"""
-input type for updating data in table "task_type"
-"""
-input task_type_set_input {
-  created_at: timestamptz
-  id: bigint
-  name: String
-  updated_at: timestamptz
-}
-
-"""aggregate stddev on columns"""
-type task_type_stddev_fields {
-  id: Float
-}
-
-"""aggregate stddev_pop on columns"""
-type task_type_stddev_pop_fields {
-  id: Float
-}
-
-"""aggregate stddev_samp on columns"""
-type task_type_stddev_samp_fields {
-  id: Float
-}
-
-"""aggregate sum on columns"""
-type task_type_sum_fields {
-  id: bigint
-}
-
-"""
-update columns of table "task_type"
-"""
-enum task_type_update_column {
-  """column name"""
-  created_at
-
-  """column name"""
-  id
-
-  """column name"""
-  name
-
-  """column name"""
-  updated_at
-}
-
-"""aggregate var_pop on columns"""
-type task_type_var_pop_fields {
-  id: Float
-}
-
-"""aggregate var_samp on columns"""
-type task_type_var_samp_fields {
-  id: Float
-}
-
-"""aggregate variance on columns"""
-type task_type_variance_fields {
-  id: Float
-}
-
-"""
-update columns of table "task"
-"""
-enum task_update_column {
-  """column name"""
-  created_at
-
-  """column name"""
-  description
-
-  """column name"""
-  id
-
-  """column name"""
-  name
-
-  """column name"""
-  project_id
-
-  """column name"""
-  status_id
-
-  """column name"""
-  task_type_id
-
-  """column name"""
-  updated_at
-
-  """column name"""
-  user_id
-}
-
-"""aggregate var_pop on columns"""
-type task_var_pop_fields {
-  id: Float
-  project_id: Float
-  status_id: Float
-  task_type_id: Float
-  user_id: Float
-}
-
-"""
-order by var_pop() on columns of table "task"
-"""
-input task_var_pop_order_by {
-  id: order_by
-  project_id: order_by
-  status_id: order_by
-  task_type_id: order_by
-  user_id: order_by
-}
-
-"""aggregate var_samp on columns"""
-type task_var_samp_fields {
-  id: Float
-  project_id: Float
-  status_id: Float
-  task_type_id: Float
-  user_id: Float
-}
-
-"""
-order by var_samp() on columns of table "task"
-"""
-input task_var_samp_order_by {
-  id: order_by
-  project_id: order_by
-  status_id: order_by
-  task_type_id: order_by
-  user_id: order_by
-}
-
-"""aggregate variance on columns"""
-type task_variance_fields {
-  id: Float
-  project_id: Float
-  status_id: Float
-  task_type_id: Float
-  user_id: Float
-}
-
-"""
-order by variance() on columns of table "task"
-"""
-input task_variance_order_by {
-  id: order_by
-  project_id: order_by
-  status_id: order_by
-  task_type_id: order_by
-  user_id: order_by
+  users_by_pk(id: bigint!): users
+
+  """
+  fetch data from the table: "users_leave_lines"
+  """
+  users_leave_lines(
+    """distinct select on columns"""
+    distinct_on: [users_leave_lines_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_leave_lines_order_by!]
+
+    """filter the rows returned"""
+    where: users_leave_lines_bool_exp
+  ): [users_leave_lines!]!
+
+  """
+  fetch aggregated fields from the table: "users_leave_lines"
+  """
+  users_leave_lines_aggregate(
+    """distinct select on columns"""
+    distinct_on: [users_leave_lines_select_column!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    order_by: [users_leave_lines_order_by!]
+
+    """filter the rows returned"""
+    where: users_leave_lines_bool_exp
+  ): users_leave_lines_aggregate!
+
+  """
+  fetch data from the table: "users_leave_lines" using primary key columns
+  """
+  users_leave_lines_by_pk(id: bigint!): users_leave_lines
 }
 
 scalar timestamptz
@@ -2051,54 +2326,1423 @@ input timestamptz_comparison_exp {
   _nin: [timestamptz!]
 }
 
-"List of Users\n\n\ncolumns and relationships of \"users\"\n"
-type users {
+"""
+columns and relationships of "trans_leave_request"
+"""
+type trans_leave_request {
+  active: Boolean!
+  approved_date: date!
+  cancelled_date: date!
   created_at: timestamptz!
-  first_name: String!
+  date_from_leave: date!
+  date_to_leave: date!
+  day: String!
   id: bigint!
-  last_name: String!
+
+  """An object relationship"""
+  manager: users
+  manager_id: Int!
+  month: String!
+  rejected_date: date!
+  remarks: String!
+
+  """An object relationship"""
+  request_type: request_types
+  request_type_id: Int!
+
+  """An object relationship"""
+  requested: users
+  requested_id: Int!
+
+  """An object relationship"""
+  status: status
+  status_id: Int!
+  submitted_date: date!
+  updated_at: timestamptz!
+  year: String!
+}
+
+"""
+aggregated selection of "trans_leave_request"
+"""
+type trans_leave_request_aggregate {
+  aggregate: trans_leave_request_aggregate_fields
+  nodes: [trans_leave_request!]!
+}
+
+"""
+aggregate fields of "trans_leave_request"
+"""
+type trans_leave_request_aggregate_fields {
+  avg: trans_leave_request_avg_fields
+  count(columns: [trans_leave_request_select_column!], distinct: Boolean): Int!
+  max: trans_leave_request_max_fields
+  min: trans_leave_request_min_fields
+  stddev: trans_leave_request_stddev_fields
+  stddev_pop: trans_leave_request_stddev_pop_fields
+  stddev_samp: trans_leave_request_stddev_samp_fields
+  sum: trans_leave_request_sum_fields
+  var_pop: trans_leave_request_var_pop_fields
+  var_samp: trans_leave_request_var_samp_fields
+  variance: trans_leave_request_variance_fields
+}
+
+"""
+order by aggregate values of table "trans_leave_request"
+"""
+input trans_leave_request_aggregate_order_by {
+  avg: trans_leave_request_avg_order_by
+  count: order_by
+  max: trans_leave_request_max_order_by
+  min: trans_leave_request_min_order_by
+  stddev: trans_leave_request_stddev_order_by
+  stddev_pop: trans_leave_request_stddev_pop_order_by
+  stddev_samp: trans_leave_request_stddev_samp_order_by
+  sum: trans_leave_request_sum_order_by
+  var_pop: trans_leave_request_var_pop_order_by
+  var_samp: trans_leave_request_var_samp_order_by
+  variance: trans_leave_request_variance_order_by
+}
+
+"""
+input type for inserting array relation for remote table "trans_leave_request"
+"""
+input trans_leave_request_arr_rel_insert_input {
+  data: [trans_leave_request_insert_input!]!
+
+  """on conflict condition"""
+  on_conflict: trans_leave_request_on_conflict
+}
+
+"""
+columns and relationships of "trans_leave_request_attachments"
+"""
+type trans_leave_request_attachments {
+  active: Boolean!
+  attachment: bytea
+  created_at: timestamptz!
+  id: bigint!
+  name: String!
+
+  """An object relationship"""
+  trans_leave_request: trans_leave_request
+  trans_leave_request_id: Int!
+  updated_at: timestamptz!
+
+  """An object relationship"""
+  user: users
+  user_id: Int!
+}
+
+"""
+aggregated selection of "trans_leave_request_attachments"
+"""
+type trans_leave_request_attachments_aggregate {
+  aggregate: trans_leave_request_attachments_aggregate_fields
+  nodes: [trans_leave_request_attachments!]!
+}
+
+"""
+aggregate fields of "trans_leave_request_attachments"
+"""
+type trans_leave_request_attachments_aggregate_fields {
+  avg: trans_leave_request_attachments_avg_fields
+  count(columns: [trans_leave_request_attachments_select_column!], distinct: Boolean): Int!
+  max: trans_leave_request_attachments_max_fields
+  min: trans_leave_request_attachments_min_fields
+  stddev: trans_leave_request_attachments_stddev_fields
+  stddev_pop: trans_leave_request_attachments_stddev_pop_fields
+  stddev_samp: trans_leave_request_attachments_stddev_samp_fields
+  sum: trans_leave_request_attachments_sum_fields
+  var_pop: trans_leave_request_attachments_var_pop_fields
+  var_samp: trans_leave_request_attachments_var_samp_fields
+  variance: trans_leave_request_attachments_variance_fields
+}
+
+"""aggregate avg on columns"""
+type trans_leave_request_attachments_avg_fields {
+  id: Float
+  trans_leave_request_id: Float
+  user_id: Float
+}
+
+"""
+Boolean expression to filter rows from the table "trans_leave_request_attachments". All fields are combined with a logical 'AND'.
+"""
+input trans_leave_request_attachments_bool_exp {
+  _and: [trans_leave_request_attachments_bool_exp!]
+  _not: trans_leave_request_attachments_bool_exp
+  _or: [trans_leave_request_attachments_bool_exp!]
+  active: Boolean_comparison_exp
+  attachment: bytea_comparison_exp
+  created_at: timestamptz_comparison_exp
+  id: bigint_comparison_exp
+  name: String_comparison_exp
+  trans_leave_request: trans_leave_request_bool_exp
+  trans_leave_request_id: Int_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  user: users_bool_exp
+  user_id: Int_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "trans_leave_request_attachments"
+"""
+enum trans_leave_request_attachments_constraint {
+  """unique or primary key constraint"""
+  trans_leave_request_attachments_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "trans_leave_request_attachments"
+"""
+input trans_leave_request_attachments_inc_input {
+  id: bigint
+  trans_leave_request_id: Int
+  user_id: Int
+}
+
+"""
+input type for inserting data into table "trans_leave_request_attachments"
+"""
+input trans_leave_request_attachments_insert_input {
+  active: Boolean
+  attachment: bytea
+  created_at: timestamptz
+  id: bigint
+  name: String
+  trans_leave_request: trans_leave_request_obj_rel_insert_input
+  trans_leave_request_id: Int
+  updated_at: timestamptz
+  user: users_obj_rel_insert_input
+  user_id: Int
+}
+
+"""aggregate max on columns"""
+type trans_leave_request_attachments_max_fields {
+  created_at: timestamptz
+  id: bigint
+  name: String
+  trans_leave_request_id: Int
+  updated_at: timestamptz
+  user_id: Int
+}
+
+"""aggregate min on columns"""
+type trans_leave_request_attachments_min_fields {
+  created_at: timestamptz
+  id: bigint
+  name: String
+  trans_leave_request_id: Int
+  updated_at: timestamptz
+  user_id: Int
+}
+
+"""
+response of any mutation on the table "trans_leave_request_attachments"
+"""
+type trans_leave_request_attachments_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [trans_leave_request_attachments!]!
+}
+
+"""
+on conflict condition type for table "trans_leave_request_attachments"
+"""
+input trans_leave_request_attachments_on_conflict {
+  constraint: trans_leave_request_attachments_constraint!
+  update_columns: [trans_leave_request_attachments_update_column!]! = []
+  where: trans_leave_request_attachments_bool_exp
+}
+
+"""
+Ordering options when selecting data from "trans_leave_request_attachments".
+"""
+input trans_leave_request_attachments_order_by {
+  active: order_by
+  attachment: order_by
+  created_at: order_by
+  id: order_by
+  name: order_by
+  trans_leave_request: trans_leave_request_order_by
+  trans_leave_request_id: order_by
+  updated_at: order_by
+  user: users_order_by
+  user_id: order_by
+}
+
+"""primary key columns input for table: trans_leave_request_attachments"""
+input trans_leave_request_attachments_pk_columns_input {
+  id: bigint!
+}
+
+"""
+select columns of table "trans_leave_request_attachments"
+"""
+enum trans_leave_request_attachments_select_column {
+  """column name"""
+  active
+
+  """column name"""
+  attachment
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  trans_leave_request_id
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  user_id
+}
+
+"""
+input type for updating data in table "trans_leave_request_attachments"
+"""
+input trans_leave_request_attachments_set_input {
+  active: Boolean
+  attachment: bytea
+  created_at: timestamptz
+  id: bigint
+  name: String
+  trans_leave_request_id: Int
+  updated_at: timestamptz
+  user_id: Int
+}
+
+"""aggregate stddev on columns"""
+type trans_leave_request_attachments_stddev_fields {
+  id: Float
+  trans_leave_request_id: Float
+  user_id: Float
+}
+
+"""aggregate stddev_pop on columns"""
+type trans_leave_request_attachments_stddev_pop_fields {
+  id: Float
+  trans_leave_request_id: Float
+  user_id: Float
+}
+
+"""aggregate stddev_samp on columns"""
+type trans_leave_request_attachments_stddev_samp_fields {
+  id: Float
+  trans_leave_request_id: Float
+  user_id: Float
+}
+
+"""aggregate sum on columns"""
+type trans_leave_request_attachments_sum_fields {
+  id: bigint
+  trans_leave_request_id: Int
+  user_id: Int
+}
+
+"""
+update columns of table "trans_leave_request_attachments"
+"""
+enum trans_leave_request_attachments_update_column {
+  """column name"""
+  active
+
+  """column name"""
+  attachment
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  trans_leave_request_id
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  user_id
+}
+
+"""aggregate var_pop on columns"""
+type trans_leave_request_attachments_var_pop_fields {
+  id: Float
+  trans_leave_request_id: Float
+  user_id: Float
+}
+
+"""aggregate var_samp on columns"""
+type trans_leave_request_attachments_var_samp_fields {
+  id: Float
+  trans_leave_request_id: Float
+  user_id: Float
+}
+
+"""aggregate variance on columns"""
+type trans_leave_request_attachments_variance_fields {
+  id: Float
+  trans_leave_request_id: Float
+  user_id: Float
+}
+
+"""aggregate avg on columns"""
+type trans_leave_request_avg_fields {
+  id: Float
+  manager_id: Float
+  request_type_id: Float
+  requested_id: Float
+  status_id: Float
+}
+
+"""
+order by avg() on columns of table "trans_leave_request"
+"""
+input trans_leave_request_avg_order_by {
+  id: order_by
+  manager_id: order_by
+  request_type_id: order_by
+  requested_id: order_by
+  status_id: order_by
+}
+
+"""
+Boolean expression to filter rows from the table "trans_leave_request". All fields are combined with a logical 'AND'.
+"""
+input trans_leave_request_bool_exp {
+  _and: [trans_leave_request_bool_exp!]
+  _not: trans_leave_request_bool_exp
+  _or: [trans_leave_request_bool_exp!]
+  active: Boolean_comparison_exp
+  approved_date: date_comparison_exp
+  cancelled_date: date_comparison_exp
+  created_at: timestamptz_comparison_exp
+  date_from_leave: date_comparison_exp
+  date_to_leave: date_comparison_exp
+  day: String_comparison_exp
+  id: bigint_comparison_exp
+  manager: users_bool_exp
+  manager_id: Int_comparison_exp
+  month: String_comparison_exp
+  rejected_date: date_comparison_exp
+  remarks: String_comparison_exp
+  request_type: request_types_bool_exp
+  request_type_id: Int_comparison_exp
+  requested: users_bool_exp
+  requested_id: Int_comparison_exp
+  status: status_bool_exp
+  status_id: Int_comparison_exp
+  submitted_date: date_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  year: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "trans_leave_request"
+"""
+enum trans_leave_request_constraint {
+  """unique or primary key constraint"""
+  trans_leave_request_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "trans_leave_request"
+"""
+input trans_leave_request_inc_input {
+  id: bigint
+  manager_id: Int
+  request_type_id: Int
+  requested_id: Int
+  status_id: Int
+}
+
+"""
+input type for inserting data into table "trans_leave_request"
+"""
+input trans_leave_request_insert_input {
+  active: Boolean
+  approved_date: date
+  cancelled_date: date
+  created_at: timestamptz
+  date_from_leave: date
+  date_to_leave: date
+  day: String
+  id: bigint
+  manager: users_obj_rel_insert_input
+  manager_id: Int
+  month: String
+  rejected_date: date
+  remarks: String
+  request_type: request_types_obj_rel_insert_input
+  request_type_id: Int
+  requested: users_obj_rel_insert_input
+  requested_id: Int
+  status: status_obj_rel_insert_input
+  status_id: Int
+  submitted_date: date
+  updated_at: timestamptz
+  year: String
+}
+
+"""
+columns and relationships of "trans_leave_request_lines"
+"""
+type trans_leave_request_lines {
+  active: Boolean!
+  created_at: timestamptz!
+  date: date!
+  id: bigint!
+
+  """An object relationship"""
+  request_type: request_types
+  request_type_id: Int!
+
+  """An object relationship"""
+  requested: users
+  requested_id: Int!
+
+  """An object relationship"""
+  trans_leave_request: trans_leave_request
+  trans_leave_request_id: Int!
+  updated_at: timestamptz!
+}
+
+"""
+aggregated selection of "trans_leave_request_lines"
+"""
+type trans_leave_request_lines_aggregate {
+  aggregate: trans_leave_request_lines_aggregate_fields
+  nodes: [trans_leave_request_lines!]!
+}
+
+"""
+aggregate fields of "trans_leave_request_lines"
+"""
+type trans_leave_request_lines_aggregate_fields {
+  avg: trans_leave_request_lines_avg_fields
+  count(columns: [trans_leave_request_lines_select_column!], distinct: Boolean): Int!
+  max: trans_leave_request_lines_max_fields
+  min: trans_leave_request_lines_min_fields
+  stddev: trans_leave_request_lines_stddev_fields
+  stddev_pop: trans_leave_request_lines_stddev_pop_fields
+  stddev_samp: trans_leave_request_lines_stddev_samp_fields
+  sum: trans_leave_request_lines_sum_fields
+  var_pop: trans_leave_request_lines_var_pop_fields
+  var_samp: trans_leave_request_lines_var_samp_fields
+  variance: trans_leave_request_lines_variance_fields
+}
+
+"""aggregate avg on columns"""
+type trans_leave_request_lines_avg_fields {
+  id: Float
+  request_type_id: Float
+  requested_id: Float
+  trans_leave_request_id: Float
+}
+
+"""
+Boolean expression to filter rows from the table "trans_leave_request_lines". All fields are combined with a logical 'AND'.
+"""
+input trans_leave_request_lines_bool_exp {
+  _and: [trans_leave_request_lines_bool_exp!]
+  _not: trans_leave_request_lines_bool_exp
+  _or: [trans_leave_request_lines_bool_exp!]
+  active: Boolean_comparison_exp
+  created_at: timestamptz_comparison_exp
+  date: date_comparison_exp
+  id: bigint_comparison_exp
+  request_type: request_types_bool_exp
+  request_type_id: Int_comparison_exp
+  requested: users_bool_exp
+  requested_id: Int_comparison_exp
+  trans_leave_request: trans_leave_request_bool_exp
+  trans_leave_request_id: Int_comparison_exp
+  updated_at: timestamptz_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "trans_leave_request_lines"
+"""
+enum trans_leave_request_lines_constraint {
+  """unique or primary key constraint"""
+  trans_leave_request_lines_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "trans_leave_request_lines"
+"""
+input trans_leave_request_lines_inc_input {
+  id: bigint
+  request_type_id: Int
+  requested_id: Int
+  trans_leave_request_id: Int
+}
+
+"""
+input type for inserting data into table "trans_leave_request_lines"
+"""
+input trans_leave_request_lines_insert_input {
+  active: Boolean
+  created_at: timestamptz
+  date: date
+  id: bigint
+  request_type: request_types_obj_rel_insert_input
+  request_type_id: Int
+  requested: users_obj_rel_insert_input
+  requested_id: Int
+  trans_leave_request: trans_leave_request_obj_rel_insert_input
+  trans_leave_request_id: Int
+  updated_at: timestamptz
+}
+
+"""aggregate max on columns"""
+type trans_leave_request_lines_max_fields {
+  created_at: timestamptz
+  date: date
+  id: bigint
+  request_type_id: Int
+  requested_id: Int
+  trans_leave_request_id: Int
+  updated_at: timestamptz
+}
+
+"""aggregate min on columns"""
+type trans_leave_request_lines_min_fields {
+  created_at: timestamptz
+  date: date
+  id: bigint
+  request_type_id: Int
+  requested_id: Int
+  trans_leave_request_id: Int
+  updated_at: timestamptz
+}
+
+"""
+response of any mutation on the table "trans_leave_request_lines"
+"""
+type trans_leave_request_lines_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [trans_leave_request_lines!]!
+}
+
+"""
+on conflict condition type for table "trans_leave_request_lines"
+"""
+input trans_leave_request_lines_on_conflict {
+  constraint: trans_leave_request_lines_constraint!
+  update_columns: [trans_leave_request_lines_update_column!]! = []
+  where: trans_leave_request_lines_bool_exp
+}
+
+"""Ordering options when selecting data from "trans_leave_request_lines"."""
+input trans_leave_request_lines_order_by {
+  active: order_by
+  created_at: order_by
+  date: order_by
+  id: order_by
+  request_type: request_types_order_by
+  request_type_id: order_by
+  requested: users_order_by
+  requested_id: order_by
+  trans_leave_request: trans_leave_request_order_by
+  trans_leave_request_id: order_by
+  updated_at: order_by
+}
+
+"""primary key columns input for table: trans_leave_request_lines"""
+input trans_leave_request_lines_pk_columns_input {
+  id: bigint!
+}
+
+"""
+select columns of table "trans_leave_request_lines"
+"""
+enum trans_leave_request_lines_select_column {
+  """column name"""
+  active
+
+  """column name"""
+  created_at
+
+  """column name"""
+  date
+
+  """column name"""
+  id
+
+  """column name"""
+  request_type_id
+
+  """column name"""
+  requested_id
+
+  """column name"""
+  trans_leave_request_id
+
+  """column name"""
+  updated_at
+}
+
+"""
+input type for updating data in table "trans_leave_request_lines"
+"""
+input trans_leave_request_lines_set_input {
+  active: Boolean
+  created_at: timestamptz
+  date: date
+  id: bigint
+  request_type_id: Int
+  requested_id: Int
+  trans_leave_request_id: Int
+  updated_at: timestamptz
+}
+
+"""aggregate stddev on columns"""
+type trans_leave_request_lines_stddev_fields {
+  id: Float
+  request_type_id: Float
+  requested_id: Float
+  trans_leave_request_id: Float
+}
+
+"""aggregate stddev_pop on columns"""
+type trans_leave_request_lines_stddev_pop_fields {
+  id: Float
+  request_type_id: Float
+  requested_id: Float
+  trans_leave_request_id: Float
+}
+
+"""aggregate stddev_samp on columns"""
+type trans_leave_request_lines_stddev_samp_fields {
+  id: Float
+  request_type_id: Float
+  requested_id: Float
+  trans_leave_request_id: Float
+}
+
+"""aggregate sum on columns"""
+type trans_leave_request_lines_sum_fields {
+  id: bigint
+  request_type_id: Int
+  requested_id: Int
+  trans_leave_request_id: Int
+}
+
+"""
+update columns of table "trans_leave_request_lines"
+"""
+enum trans_leave_request_lines_update_column {
+  """column name"""
+  active
+
+  """column name"""
+  created_at
+
+  """column name"""
+  date
+
+  """column name"""
+  id
+
+  """column name"""
+  request_type_id
+
+  """column name"""
+  requested_id
+
+  """column name"""
+  trans_leave_request_id
+
+  """column name"""
+  updated_at
+}
+
+"""aggregate var_pop on columns"""
+type trans_leave_request_lines_var_pop_fields {
+  id: Float
+  request_type_id: Float
+  requested_id: Float
+  trans_leave_request_id: Float
+}
+
+"""aggregate var_samp on columns"""
+type trans_leave_request_lines_var_samp_fields {
+  id: Float
+  request_type_id: Float
+  requested_id: Float
+  trans_leave_request_id: Float
+}
+
+"""aggregate variance on columns"""
+type trans_leave_request_lines_variance_fields {
+  id: Float
+  request_type_id: Float
+  requested_id: Float
+  trans_leave_request_id: Float
+}
+
+"""aggregate max on columns"""
+type trans_leave_request_max_fields {
+  approved_date: date
+  cancelled_date: date
+  created_at: timestamptz
+  date_from_leave: date
+  date_to_leave: date
+  day: String
+  id: bigint
+  manager_id: Int
+  month: String
+  rejected_date: date
+  remarks: String
+  request_type_id: Int
+  requested_id: Int
+  status_id: Int
+  submitted_date: date
+  updated_at: timestamptz
+  year: String
+}
+
+"""
+order by max() on columns of table "trans_leave_request"
+"""
+input trans_leave_request_max_order_by {
+  approved_date: order_by
+  cancelled_date: order_by
+  created_at: order_by
+  date_from_leave: order_by
+  date_to_leave: order_by
+  day: order_by
+  id: order_by
+  manager_id: order_by
+  month: order_by
+  rejected_date: order_by
+  remarks: order_by
+  request_type_id: order_by
+  requested_id: order_by
+  status_id: order_by
+  submitted_date: order_by
+  updated_at: order_by
+  year: order_by
+}
+
+"""aggregate min on columns"""
+type trans_leave_request_min_fields {
+  approved_date: date
+  cancelled_date: date
+  created_at: timestamptz
+  date_from_leave: date
+  date_to_leave: date
+  day: String
+  id: bigint
+  manager_id: Int
+  month: String
+  rejected_date: date
+  remarks: String
+  request_type_id: Int
+  requested_id: Int
+  status_id: Int
+  submitted_date: date
+  updated_at: timestamptz
+  year: String
+}
+
+"""
+order by min() on columns of table "trans_leave_request"
+"""
+input trans_leave_request_min_order_by {
+  approved_date: order_by
+  cancelled_date: order_by
+  created_at: order_by
+  date_from_leave: order_by
+  date_to_leave: order_by
+  day: order_by
+  id: order_by
+  manager_id: order_by
+  month: order_by
+  rejected_date: order_by
+  remarks: order_by
+  request_type_id: order_by
+  requested_id: order_by
+  status_id: order_by
+  submitted_date: order_by
+  updated_at: order_by
+  year: order_by
+}
+
+"""
+response of any mutation on the table "trans_leave_request"
+"""
+type trans_leave_request_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [trans_leave_request!]!
+}
+
+"""
+input type for inserting object relation for remote table "trans_leave_request"
+"""
+input trans_leave_request_obj_rel_insert_input {
+  data: trans_leave_request_insert_input!
+
+  """on conflict condition"""
+  on_conflict: trans_leave_request_on_conflict
+}
+
+"""
+on conflict condition type for table "trans_leave_request"
+"""
+input trans_leave_request_on_conflict {
+  constraint: trans_leave_request_constraint!
+  update_columns: [trans_leave_request_update_column!]! = []
+  where: trans_leave_request_bool_exp
+}
+
+"""Ordering options when selecting data from "trans_leave_request"."""
+input trans_leave_request_order_by {
+  active: order_by
+  approved_date: order_by
+  cancelled_date: order_by
+  created_at: order_by
+  date_from_leave: order_by
+  date_to_leave: order_by
+  day: order_by
+  id: order_by
+  manager: users_order_by
+  manager_id: order_by
+  month: order_by
+  rejected_date: order_by
+  remarks: order_by
+  request_type: request_types_order_by
+  request_type_id: order_by
+  requested: users_order_by
+  requested_id: order_by
+  status: status_order_by
+  status_id: order_by
+  submitted_date: order_by
+  updated_at: order_by
+  year: order_by
+}
+
+"""primary key columns input for table: trans_leave_request"""
+input trans_leave_request_pk_columns_input {
+  id: bigint!
+}
+
+"""
+select columns of table "trans_leave_request"
+"""
+enum trans_leave_request_select_column {
+  """column name"""
+  active
+
+  """column name"""
+  approved_date
+
+  """column name"""
+  cancelled_date
+
+  """column name"""
+  created_at
+
+  """column name"""
+  date_from_leave
+
+  """column name"""
+  date_to_leave
+
+  """column name"""
+  day
+
+  """column name"""
+  id
+
+  """column name"""
+  manager_id
+
+  """column name"""
+  month
+
+  """column name"""
+  rejected_date
+
+  """column name"""
+  remarks
+
+  """column name"""
+  request_type_id
+
+  """column name"""
+  requested_id
+
+  """column name"""
+  status_id
+
+  """column name"""
+  submitted_date
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  year
+}
+
+"""
+input type for updating data in table "trans_leave_request"
+"""
+input trans_leave_request_set_input {
+  active: Boolean
+  approved_date: date
+  cancelled_date: date
+  created_at: timestamptz
+  date_from_leave: date
+  date_to_leave: date
+  day: String
+  id: bigint
+  manager_id: Int
+  month: String
+  rejected_date: date
+  remarks: String
+  request_type_id: Int
+  requested_id: Int
+  status_id: Int
+  submitted_date: date
+  updated_at: timestamptz
+  year: String
+}
+
+"""aggregate stddev on columns"""
+type trans_leave_request_stddev_fields {
+  id: Float
+  manager_id: Float
+  request_type_id: Float
+  requested_id: Float
+  status_id: Float
+}
+
+"""
+order by stddev() on columns of table "trans_leave_request"
+"""
+input trans_leave_request_stddev_order_by {
+  id: order_by
+  manager_id: order_by
+  request_type_id: order_by
+  requested_id: order_by
+  status_id: order_by
+}
+
+"""aggregate stddev_pop on columns"""
+type trans_leave_request_stddev_pop_fields {
+  id: Float
+  manager_id: Float
+  request_type_id: Float
+  requested_id: Float
+  status_id: Float
+}
+
+"""
+order by stddev_pop() on columns of table "trans_leave_request"
+"""
+input trans_leave_request_stddev_pop_order_by {
+  id: order_by
+  manager_id: order_by
+  request_type_id: order_by
+  requested_id: order_by
+  status_id: order_by
+}
+
+"""aggregate stddev_samp on columns"""
+type trans_leave_request_stddev_samp_fields {
+  id: Float
+  manager_id: Float
+  request_type_id: Float
+  requested_id: Float
+  status_id: Float
+}
+
+"""
+order by stddev_samp() on columns of table "trans_leave_request"
+"""
+input trans_leave_request_stddev_samp_order_by {
+  id: order_by
+  manager_id: order_by
+  request_type_id: order_by
+  requested_id: order_by
+  status_id: order_by
+}
+
+"""aggregate sum on columns"""
+type trans_leave_request_sum_fields {
+  id: bigint
+  manager_id: Int
+  request_type_id: Int
+  requested_id: Int
+  status_id: Int
+}
+
+"""
+order by sum() on columns of table "trans_leave_request"
+"""
+input trans_leave_request_sum_order_by {
+  id: order_by
+  manager_id: order_by
+  request_type_id: order_by
+  requested_id: order_by
+  status_id: order_by
+}
+
+"""
+update columns of table "trans_leave_request"
+"""
+enum trans_leave_request_update_column {
+  """column name"""
+  active
+
+  """column name"""
+  approved_date
+
+  """column name"""
+  cancelled_date
+
+  """column name"""
+  created_at
+
+  """column name"""
+  date_from_leave
+
+  """column name"""
+  date_to_leave
+
+  """column name"""
+  day
+
+  """column name"""
+  id
+
+  """column name"""
+  manager_id
+
+  """column name"""
+  month
+
+  """column name"""
+  rejected_date
+
+  """column name"""
+  remarks
+
+  """column name"""
+  request_type_id
+
+  """column name"""
+  requested_id
+
+  """column name"""
+  status_id
+
+  """column name"""
+  submitted_date
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  year
+}
+
+"""aggregate var_pop on columns"""
+type trans_leave_request_var_pop_fields {
+  id: Float
+  manager_id: Float
+  request_type_id: Float
+  requested_id: Float
+  status_id: Float
+}
+
+"""
+order by var_pop() on columns of table "trans_leave_request"
+"""
+input trans_leave_request_var_pop_order_by {
+  id: order_by
+  manager_id: order_by
+  request_type_id: order_by
+  requested_id: order_by
+  status_id: order_by
+}
+
+"""aggregate var_samp on columns"""
+type trans_leave_request_var_samp_fields {
+  id: Float
+  manager_id: Float
+  request_type_id: Float
+  requested_id: Float
+  status_id: Float
+}
+
+"""
+order by var_samp() on columns of table "trans_leave_request"
+"""
+input trans_leave_request_var_samp_order_by {
+  id: order_by
+  manager_id: order_by
+  request_type_id: order_by
+  requested_id: order_by
+  status_id: order_by
+}
+
+"""aggregate variance on columns"""
+type trans_leave_request_variance_fields {
+  id: Float
+  manager_id: Float
+  request_type_id: Float
+  requested_id: Float
+  status_id: Float
+}
+
+"""
+order by variance() on columns of table "trans_leave_request"
+"""
+input trans_leave_request_variance_order_by {
+  id: order_by
+  manager_id: order_by
+  request_type_id: order_by
+  requested_id: order_by
+  status_id: order_by
+}
+
+"""
+columns and relationships of "user_groups"
+"""
+type user_groups {
+  id: Int!
+  name: String!
+}
+
+"""
+aggregated selection of "user_groups"
+"""
+type user_groups_aggregate {
+  aggregate: user_groups_aggregate_fields
+  nodes: [user_groups!]!
+}
+
+"""
+aggregate fields of "user_groups"
+"""
+type user_groups_aggregate_fields {
+  avg: user_groups_avg_fields
+  count(columns: [user_groups_select_column!], distinct: Boolean): Int!
+  max: user_groups_max_fields
+  min: user_groups_min_fields
+  stddev: user_groups_stddev_fields
+  stddev_pop: user_groups_stddev_pop_fields
+  stddev_samp: user_groups_stddev_samp_fields
+  sum: user_groups_sum_fields
+  var_pop: user_groups_var_pop_fields
+  var_samp: user_groups_var_samp_fields
+  variance: user_groups_variance_fields
+}
+
+"""aggregate avg on columns"""
+type user_groups_avg_fields {
+  id: Float
+}
+
+"""
+Boolean expression to filter rows from the table "user_groups". All fields are combined with a logical 'AND'.
+"""
+input user_groups_bool_exp {
+  _and: [user_groups_bool_exp!]
+  _not: user_groups_bool_exp
+  _or: [user_groups_bool_exp!]
+  id: Int_comparison_exp
+  name: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "user_groups"
+"""
+enum user_groups_constraint {
+  """unique or primary key constraint"""
+  user_groups_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "user_groups"
+"""
+input user_groups_inc_input {
+  id: Int
+}
+
+"""
+input type for inserting data into table "user_groups"
+"""
+input user_groups_insert_input {
+  id: Int
+  name: String
+}
+
+"""aggregate max on columns"""
+type user_groups_max_fields {
+  id: Int
+  name: String
+}
+
+"""aggregate min on columns"""
+type user_groups_min_fields {
+  id: Int
+  name: String
+}
+
+"""
+response of any mutation on the table "user_groups"
+"""
+type user_groups_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [user_groups!]!
+}
+
+"""
+input type for inserting object relation for remote table "user_groups"
+"""
+input user_groups_obj_rel_insert_input {
+  data: user_groups_insert_input!
+
+  """on conflict condition"""
+  on_conflict: user_groups_on_conflict
+}
+
+"""
+on conflict condition type for table "user_groups"
+"""
+input user_groups_on_conflict {
+  constraint: user_groups_constraint!
+  update_columns: [user_groups_update_column!]! = []
+  where: user_groups_bool_exp
+}
+
+"""Ordering options when selecting data from "user_groups"."""
+input user_groups_order_by {
+  id: order_by
+  name: order_by
+}
+
+"""primary key columns input for table: user_groups"""
+input user_groups_pk_columns_input {
+  id: Int!
+}
+
+"""
+select columns of table "user_groups"
+"""
+enum user_groups_select_column {
+  """column name"""
+  id
+
+  """column name"""
+  name
+}
+
+"""
+input type for updating data in table "user_groups"
+"""
+input user_groups_set_input {
+  id: Int
+  name: String
+}
+
+"""aggregate stddev on columns"""
+type user_groups_stddev_fields {
+  id: Float
+}
+
+"""aggregate stddev_pop on columns"""
+type user_groups_stddev_pop_fields {
+  id: Float
+}
+
+"""aggregate stddev_samp on columns"""
+type user_groups_stddev_samp_fields {
+  id: Float
+}
+
+"""aggregate sum on columns"""
+type user_groups_sum_fields {
+  id: Int
+}
+
+"""
+update columns of table "user_groups"
+"""
+enum user_groups_update_column {
+  """column name"""
+  id
+
+  """column name"""
+  name
+}
+
+"""aggregate var_pop on columns"""
+type user_groups_var_pop_fields {
+  id: Float
+}
+
+"""aggregate var_samp on columns"""
+type user_groups_var_samp_fields {
+  id: Float
+}
+
+"""aggregate variance on columns"""
+type user_groups_variance_fields {
+  id: Float
+}
+
+"""
+columns and relationships of "users"
+"""
+type users {
+  active: Boolean
+  created_at: timestamptz
+  first_name: String
+  full_name: String
+
+  """An object relationship"""
+  functional_lines: functional_lines
+  functional_lines_id: Int
+
+  """An object relationship"""
+  group: user_groups
+  group_id: Int!
+  id: bigint!
+  last_name: String
   middle_name: String
   name: String!
-  role: String
+  ntid: String!
   suffix_name: String
-
-  """An array relationship"""
-  task_ids(
-    """distinct select on columns"""
-    distinct_on: [task_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [task_order_by!]
-
-    """filter the rows returned"""
-    where: task_bool_exp
-  ): [task!]!
-
-  """An aggregate relationship"""
-  task_ids_aggregate(
-    """distinct select on columns"""
-    distinct_on: [task_select_column!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    order_by: [task_order_by!]
-
-    """filter the rows returned"""
-    where: task_bool_exp
-  ): task_aggregate!
-  updated_at: timestamptz!
-  username: String!
+  updated_at: timestamptz
 }
 
 """
@@ -2126,9 +3770,47 @@ type users_aggregate_fields {
   variance: users_variance_fields
 }
 
+"""
+order by aggregate values of table "users"
+"""
+input users_aggregate_order_by {
+  avg: users_avg_order_by
+  count: order_by
+  max: users_max_order_by
+  min: users_min_order_by
+  stddev: users_stddev_order_by
+  stddev_pop: users_stddev_pop_order_by
+  stddev_samp: users_stddev_samp_order_by
+  sum: users_sum_order_by
+  var_pop: users_var_pop_order_by
+  var_samp: users_var_samp_order_by
+  variance: users_variance_order_by
+}
+
+"""
+input type for inserting array relation for remote table "users"
+"""
+input users_arr_rel_insert_input {
+  data: [users_insert_input!]!
+
+  """on conflict condition"""
+  on_conflict: users_on_conflict
+}
+
 """aggregate avg on columns"""
 type users_avg_fields {
+  functional_lines_id: Float
+  group_id: Float
   id: Float
+}
+
+"""
+order by avg() on columns of table "users"
+"""
+input users_avg_order_by {
+  functional_lines_id: order_by
+  group_id: order_by
+  id: order_by
 }
 
 """
@@ -2138,17 +3820,21 @@ input users_bool_exp {
   _and: [users_bool_exp!]
   _not: users_bool_exp
   _or: [users_bool_exp!]
+  active: Boolean_comparison_exp
   created_at: timestamptz_comparison_exp
   first_name: String_comparison_exp
+  full_name: String_comparison_exp
+  functional_lines: functional_lines_bool_exp
+  functional_lines_id: Int_comparison_exp
+  group: user_groups_bool_exp
+  group_id: Int_comparison_exp
   id: bigint_comparison_exp
   last_name: String_comparison_exp
   middle_name: String_comparison_exp
   name: String_comparison_exp
-  role: String_comparison_exp
+  ntid: String_comparison_exp
   suffix_name: String_comparison_exp
-  task_ids: task_bool_exp
   updated_at: timestamptz_comparison_exp
-  username: String_comparison_exp
 }
 
 """
@@ -2156,16 +3842,15 @@ unique or primary key constraints on table "users"
 """
 enum users_constraint {
   """unique or primary key constraint"""
-  user_id_key
-
-  """unique or primary key constraint"""
-  user_pkey
+  users_pkey
 }
 
 """
 input type for incrementing numeric columns in table "users"
 """
 input users_inc_input {
+  functional_lines_id: Int
+  group_id: Int
   id: bigint
 }
 
@@ -2173,45 +3858,435 @@ input users_inc_input {
 input type for inserting data into table "users"
 """
 input users_insert_input {
+  active: Boolean
   created_at: timestamptz
   first_name: String
+  full_name: String
+  functional_lines: functional_lines_obj_rel_insert_input
+  functional_lines_id: Int
+  group: user_groups_obj_rel_insert_input
+  group_id: Int
   id: bigint
   last_name: String
   middle_name: String
   name: String
-  role: String
+  ntid: String
   suffix_name: String
-  task_ids: task_arr_rel_insert_input
   updated_at: timestamptz
-  username: String
+}
+
+"""
+columns and relationships of "users_leave_lines"
+"""
+type users_leave_lines {
+  active: Boolean!
+  count_holiday_in_lieu: Int!
+  count_vacation_leave: Int!
+  count_vacation_leave_carry: Int!
+  created_at: timestamptz!
+  id: bigint!
+  name: String!
+  total_vacation_leave: Int!
+  updated_at: timestamptz!
+
+  """An object relationship"""
+  users: users
+  users_id: Int!
+  year: String!
+}
+
+"""
+aggregated selection of "users_leave_lines"
+"""
+type users_leave_lines_aggregate {
+  aggregate: users_leave_lines_aggregate_fields
+  nodes: [users_leave_lines!]!
+}
+
+"""
+aggregate fields of "users_leave_lines"
+"""
+type users_leave_lines_aggregate_fields {
+  avg: users_leave_lines_avg_fields
+  count(columns: [users_leave_lines_select_column!], distinct: Boolean): Int!
+  max: users_leave_lines_max_fields
+  min: users_leave_lines_min_fields
+  stddev: users_leave_lines_stddev_fields
+  stddev_pop: users_leave_lines_stddev_pop_fields
+  stddev_samp: users_leave_lines_stddev_samp_fields
+  sum: users_leave_lines_sum_fields
+  var_pop: users_leave_lines_var_pop_fields
+  var_samp: users_leave_lines_var_samp_fields
+  variance: users_leave_lines_variance_fields
+}
+
+"""aggregate avg on columns"""
+type users_leave_lines_avg_fields {
+  count_holiday_in_lieu: Float
+  count_vacation_leave: Float
+  count_vacation_leave_carry: Float
+  id: Float
+  total_vacation_leave: Float
+  users_id: Float
+}
+
+"""
+Boolean expression to filter rows from the table "users_leave_lines". All fields are combined with a logical 'AND'.
+"""
+input users_leave_lines_bool_exp {
+  _and: [users_leave_lines_bool_exp!]
+  _not: users_leave_lines_bool_exp
+  _or: [users_leave_lines_bool_exp!]
+  active: Boolean_comparison_exp
+  count_holiday_in_lieu: Int_comparison_exp
+  count_vacation_leave: Int_comparison_exp
+  count_vacation_leave_carry: Int_comparison_exp
+  created_at: timestamptz_comparison_exp
+  id: bigint_comparison_exp
+  name: String_comparison_exp
+  total_vacation_leave: Int_comparison_exp
+  updated_at: timestamptz_comparison_exp
+  users: users_bool_exp
+  users_id: Int_comparison_exp
+  year: String_comparison_exp
+}
+
+"""
+unique or primary key constraints on table "users_leave_lines"
+"""
+enum users_leave_lines_constraint {
+  """unique or primary key constraint"""
+  users_leave_lines_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "users_leave_lines"
+"""
+input users_leave_lines_inc_input {
+  count_holiday_in_lieu: Int
+  count_vacation_leave: Int
+  count_vacation_leave_carry: Int
+  id: bigint
+  total_vacation_leave: Int
+  users_id: Int
+}
+
+"""
+input type for inserting data into table "users_leave_lines"
+"""
+input users_leave_lines_insert_input {
+  active: Boolean
+  count_holiday_in_lieu: Int
+  count_vacation_leave: Int
+  count_vacation_leave_carry: Int
+  created_at: timestamptz
+  id: bigint
+  name: String
+  total_vacation_leave: Int
+  updated_at: timestamptz
+  users: users_obj_rel_insert_input
+  users_id: Int
+  year: String
+}
+
+"""aggregate max on columns"""
+type users_leave_lines_max_fields {
+  count_holiday_in_lieu: Int
+  count_vacation_leave: Int
+  count_vacation_leave_carry: Int
+  created_at: timestamptz
+  id: bigint
+  name: String
+  total_vacation_leave: Int
+  updated_at: timestamptz
+  users_id: Int
+  year: String
+}
+
+"""aggregate min on columns"""
+type users_leave_lines_min_fields {
+  count_holiday_in_lieu: Int
+  count_vacation_leave: Int
+  count_vacation_leave_carry: Int
+  created_at: timestamptz
+  id: bigint
+  name: String
+  total_vacation_leave: Int
+  updated_at: timestamptz
+  users_id: Int
+  year: String
+}
+
+"""
+response of any mutation on the table "users_leave_lines"
+"""
+type users_leave_lines_mutation_response {
+  """number of rows affected by the mutation"""
+  affected_rows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [users_leave_lines!]!
+}
+
+"""
+on conflict condition type for table "users_leave_lines"
+"""
+input users_leave_lines_on_conflict {
+  constraint: users_leave_lines_constraint!
+  update_columns: [users_leave_lines_update_column!]! = []
+  where: users_leave_lines_bool_exp
+}
+
+"""Ordering options when selecting data from "users_leave_lines"."""
+input users_leave_lines_order_by {
+  active: order_by
+  count_holiday_in_lieu: order_by
+  count_vacation_leave: order_by
+  count_vacation_leave_carry: order_by
+  created_at: order_by
+  id: order_by
+  name: order_by
+  total_vacation_leave: order_by
+  updated_at: order_by
+  users: users_order_by
+  users_id: order_by
+  year: order_by
+}
+
+"""primary key columns input for table: users_leave_lines"""
+input users_leave_lines_pk_columns_input {
+  id: bigint!
+}
+
+"""
+select columns of table "users_leave_lines"
+"""
+enum users_leave_lines_select_column {
+  """column name"""
+  active
+
+  """column name"""
+  count_holiday_in_lieu
+
+  """column name"""
+  count_vacation_leave
+
+  """column name"""
+  count_vacation_leave_carry
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  total_vacation_leave
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  users_id
+
+  """column name"""
+  year
+}
+
+"""
+input type for updating data in table "users_leave_lines"
+"""
+input users_leave_lines_set_input {
+  active: Boolean
+  count_holiday_in_lieu: Int
+  count_vacation_leave: Int
+  count_vacation_leave_carry: Int
+  created_at: timestamptz
+  id: bigint
+  name: String
+  total_vacation_leave: Int
+  updated_at: timestamptz
+  users_id: Int
+  year: String
+}
+
+"""aggregate stddev on columns"""
+type users_leave_lines_stddev_fields {
+  count_holiday_in_lieu: Float
+  count_vacation_leave: Float
+  count_vacation_leave_carry: Float
+  id: Float
+  total_vacation_leave: Float
+  users_id: Float
+}
+
+"""aggregate stddev_pop on columns"""
+type users_leave_lines_stddev_pop_fields {
+  count_holiday_in_lieu: Float
+  count_vacation_leave: Float
+  count_vacation_leave_carry: Float
+  id: Float
+  total_vacation_leave: Float
+  users_id: Float
+}
+
+"""aggregate stddev_samp on columns"""
+type users_leave_lines_stddev_samp_fields {
+  count_holiday_in_lieu: Float
+  count_vacation_leave: Float
+  count_vacation_leave_carry: Float
+  id: Float
+  total_vacation_leave: Float
+  users_id: Float
+}
+
+"""aggregate sum on columns"""
+type users_leave_lines_sum_fields {
+  count_holiday_in_lieu: Int
+  count_vacation_leave: Int
+  count_vacation_leave_carry: Int
+  id: bigint
+  total_vacation_leave: Int
+  users_id: Int
+}
+
+"""
+update columns of table "users_leave_lines"
+"""
+enum users_leave_lines_update_column {
+  """column name"""
+  active
+
+  """column name"""
+  count_holiday_in_lieu
+
+  """column name"""
+  count_vacation_leave
+
+  """column name"""
+  count_vacation_leave_carry
+
+  """column name"""
+  created_at
+
+  """column name"""
+  id
+
+  """column name"""
+  name
+
+  """column name"""
+  total_vacation_leave
+
+  """column name"""
+  updated_at
+
+  """column name"""
+  users_id
+
+  """column name"""
+  year
+}
+
+"""aggregate var_pop on columns"""
+type users_leave_lines_var_pop_fields {
+  count_holiday_in_lieu: Float
+  count_vacation_leave: Float
+  count_vacation_leave_carry: Float
+  id: Float
+  total_vacation_leave: Float
+  users_id: Float
+}
+
+"""aggregate var_samp on columns"""
+type users_leave_lines_var_samp_fields {
+  count_holiday_in_lieu: Float
+  count_vacation_leave: Float
+  count_vacation_leave_carry: Float
+  id: Float
+  total_vacation_leave: Float
+  users_id: Float
+}
+
+"""aggregate variance on columns"""
+type users_leave_lines_variance_fields {
+  count_holiday_in_lieu: Float
+  count_vacation_leave: Float
+  count_vacation_leave_carry: Float
+  id: Float
+  total_vacation_leave: Float
+  users_id: Float
 }
 
 """aggregate max on columns"""
 type users_max_fields {
   created_at: timestamptz
   first_name: String
+  full_name: String
+  functional_lines_id: Int
+  group_id: Int
   id: bigint
   last_name: String
   middle_name: String
   name: String
-  role: String
+  ntid: String
   suffix_name: String
   updated_at: timestamptz
-  username: String
+}
+
+"""
+order by max() on columns of table "users"
+"""
+input users_max_order_by {
+  created_at: order_by
+  first_name: order_by
+  full_name: order_by
+  functional_lines_id: order_by
+  group_id: order_by
+  id: order_by
+  last_name: order_by
+  middle_name: order_by
+  name: order_by
+  ntid: order_by
+  suffix_name: order_by
+  updated_at: order_by
 }
 
 """aggregate min on columns"""
 type users_min_fields {
   created_at: timestamptz
   first_name: String
+  full_name: String
+  functional_lines_id: Int
+  group_id: Int
   id: bigint
   last_name: String
   middle_name: String
   name: String
-  role: String
+  ntid: String
   suffix_name: String
   updated_at: timestamptz
-  username: String
+}
+
+"""
+order by min() on columns of table "users"
+"""
+input users_min_order_by {
+  created_at: order_by
+  first_name: order_by
+  full_name: order_by
+  functional_lines_id: order_by
+  group_id: order_by
+  id: order_by
+  last_name: order_by
+  middle_name: order_by
+  name: order_by
+  ntid: order_by
+  suffix_name: order_by
+  updated_at: order_by
 }
 
 """
@@ -2246,23 +4321,26 @@ input users_on_conflict {
 
 """Ordering options when selecting data from "users"."""
 input users_order_by {
+  active: order_by
   created_at: order_by
   first_name: order_by
+  full_name: order_by
+  functional_lines: functional_lines_order_by
+  functional_lines_id: order_by
+  group: user_groups_order_by
+  group_id: order_by
   id: order_by
   last_name: order_by
   middle_name: order_by
   name: order_by
-  role: order_by
+  ntid: order_by
   suffix_name: order_by
-  task_ids_aggregate: task_aggregate_order_by
   updated_at: order_by
-  username: order_by
 }
 
 """primary key columns input for table: users"""
 input users_pk_columns_input {
   id: bigint!
-  username: String!
 }
 
 """
@@ -2270,10 +4348,22 @@ select columns of table "users"
 """
 enum users_select_column {
   """column name"""
+  active
+
+  """column name"""
   created_at
 
   """column name"""
   first_name
+
+  """column name"""
+  full_name
+
+  """column name"""
+  functional_lines_id
+
+  """column name"""
+  group_id
 
   """column name"""
   id
@@ -2288,52 +4378,96 @@ enum users_select_column {
   name
 
   """column name"""
-  role
+  ntid
 
   """column name"""
   suffix_name
 
   """column name"""
   updated_at
-
-  """column name"""
-  username
 }
 
 """
 input type for updating data in table "users"
 """
 input users_set_input {
+  active: Boolean
   created_at: timestamptz
   first_name: String
+  full_name: String
+  functional_lines_id: Int
+  group_id: Int
   id: bigint
   last_name: String
   middle_name: String
   name: String
-  role: String
+  ntid: String
   suffix_name: String
   updated_at: timestamptz
-  username: String
 }
 
 """aggregate stddev on columns"""
 type users_stddev_fields {
+  functional_lines_id: Float
+  group_id: Float
   id: Float
+}
+
+"""
+order by stddev() on columns of table "users"
+"""
+input users_stddev_order_by {
+  functional_lines_id: order_by
+  group_id: order_by
+  id: order_by
 }
 
 """aggregate stddev_pop on columns"""
 type users_stddev_pop_fields {
+  functional_lines_id: Float
+  group_id: Float
   id: Float
+}
+
+"""
+order by stddev_pop() on columns of table "users"
+"""
+input users_stddev_pop_order_by {
+  functional_lines_id: order_by
+  group_id: order_by
+  id: order_by
 }
 
 """aggregate stddev_samp on columns"""
 type users_stddev_samp_fields {
+  functional_lines_id: Float
+  group_id: Float
   id: Float
+}
+
+"""
+order by stddev_samp() on columns of table "users"
+"""
+input users_stddev_samp_order_by {
+  functional_lines_id: order_by
+  group_id: order_by
+  id: order_by
 }
 
 """aggregate sum on columns"""
 type users_sum_fields {
+  functional_lines_id: Int
+  group_id: Int
   id: bigint
+}
+
+"""
+order by sum() on columns of table "users"
+"""
+input users_sum_order_by {
+  functional_lines_id: order_by
+  group_id: order_by
+  id: order_by
 }
 
 """
@@ -2341,10 +4475,22 @@ update columns of table "users"
 """
 enum users_update_column {
   """column name"""
+  active
+
+  """column name"""
   created_at
 
   """column name"""
   first_name
+
+  """column name"""
+  full_name
+
+  """column name"""
+  functional_lines_id
+
+  """column name"""
+  group_id
 
   """column name"""
   id
@@ -2359,29 +4505,59 @@ enum users_update_column {
   name
 
   """column name"""
-  role
+  ntid
 
   """column name"""
   suffix_name
 
   """column name"""
   updated_at
-
-  """column name"""
-  username
 }
 
 """aggregate var_pop on columns"""
 type users_var_pop_fields {
+  functional_lines_id: Float
+  group_id: Float
   id: Float
+}
+
+"""
+order by var_pop() on columns of table "users"
+"""
+input users_var_pop_order_by {
+  functional_lines_id: order_by
+  group_id: order_by
+  id: order_by
 }
 
 """aggregate var_samp on columns"""
 type users_var_samp_fields {
+  functional_lines_id: Float
+  group_id: Float
   id: Float
+}
+
+"""
+order by var_samp() on columns of table "users"
+"""
+input users_var_samp_order_by {
+  functional_lines_id: order_by
+  group_id: order_by
+  id: order_by
 }
 
 """aggregate variance on columns"""
 type users_variance_fields {
+  functional_lines_id: Float
+  group_id: Float
   id: Float
+}
+
+"""
+order by variance() on columns of table "users"
+"""
+input users_variance_order_by {
+  functional_lines_id: order_by
+  group_id: order_by
+  id: order_by
 }

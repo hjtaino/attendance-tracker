@@ -1,7 +1,15 @@
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 
-const Crud = ( () => {
+const Crud = ( (
+    model,
+    type
+) => {
+
+    const modal = ( () => {
+        
+    })
+
     return (
         <Box>
             <Button 

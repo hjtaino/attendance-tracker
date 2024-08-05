@@ -1,13 +1,48 @@
+import { useState } from 'react'
+
 import Layout from '@/components/layout/Layout'
 import Toolbar from '@/components/shared/toolbar'
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
+
+import { 
+    DataGrid, 
+    GridColDef, 
+    GridToolbar, 
+    GridEventListener, 
+    GridRowSelectionModel 
+} from '@mui/x-data-grid';
+
+import { 
+    useGetStatusQuery,
+    useAddStatusMutation,
+    useUpdateStatusMutation,
+    useDeleteStatusMutation,
+} from './queries'
+
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Modal from '@mui/material/Modal';
+import Typography from '@mui/material/Typography';
+import TextField from '@mui/material/TextField';
+import Checkbox from '@mui/material/Checkbox';
+
+const styleModal = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    minHeight: '300px',
+    width: 600,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 const columns: GridColDef[] = [
-    { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'sequence', headerName: 'Sequence', width: 150 },
-    { field: 'active', headerName: 'Active', width: 200 },
-];
+    { field: 'name', headerName: 'Name', type: 'string', flex: 1 },
+    { field: 'sequence', headerName: 'Sequence', type: 'number', flex: 1 },
+    { field: 'active', headerName: 'Active', type: 'boolean', flex: 1 },
+]
     
 const rows = [
     { id: 1, name: 'Harvey Taino', sequence: 1, active: true },
@@ -16,22 +51,166 @@ const rows = [
 ];
 
 const Status = ( () => {
+
+    const [id, setId] = useState('')
+    const [name, setName] = useState('')
+    const [sequence, setSequence] = useState(Number(0))
+    const [active, setActive] = useState(true)
+
+    const [open, setOpen] = useState(false)
+    const [edit, setEdit] = useState(false)
+
+    const [rowSelectionModel, setRowSelectionModel] = useState<GridRowSelectionModel>([]);
+
+    const { loading, data, error, refetch } = useGetStatusQuery()
+
+    const [ addStatus ] = useAddStatusMutation({
+        variables: {
+            'name': name,
+            'sequence': sequence
+        },
+        onCompleted: (data) => {
+            setName('')
+            setSequence(Number(0))
+            setOpen(false)
+            refetch()
+        }
+    });
+
+    const [ updateStatus ] = useUpdateStatusMutation({
+        variables: {
+            'id': id,
+            'name': name,
+            'sequence': sequence,
+            'active': active
+        },
+        onCompleted: (data) => {
+            setId('')
+            setName('')
+            setSequence(Number(0))
+            setActive(true)
+            setOpen(false)
+            refetch()
+        }
+    })
+
+    const [ deleteStatus ] = useDeleteStatusMutation()
+
+    const rows = data?.status ?? []
+
+    const create = ( () => {
+        if (edit == false) {
+            addStatus()
+        } else {
+            updateStatus()
+        }
+        
+    })
+
+    const deleteRow = ( () => {
+        if (rowSelectionModel.length > 0) {
+            rowSelectionModel.map( (value) => {
+                deleteStatus({
+                    variables: {
+                        id: value
+                    },
+                    onCompleted: (data) => {
+                        refetch()
+                    }
+                })
+            })
+        }
+    })
+
+    const handleClickedRow: GridEventListener<'rowClick'> = (
+        params, // GridRowParams
+        event, // MuiEvent<React.MouseEvent<HTMLElement>>
+        details, // GridCallbackDetails
+      ) => {
+        // setMessage(`Movie "${params.row.title}" clicked`);
+        setEdit(true)
+        setId(params.row.id)
+        setName(params.row.name)
+        setSequence(params.row.sequence)
+        setActive(params.row.active)
+        setOpen(true)
+      };
+
+    const cancelModal = ( () => {
+        setId('')
+        setName('')
+        setSequence(Number(0))
+        setEdit(false)
+        setOpen(false)
+    })
+
     return(
         <Box>
             <Layout />
-            <Toolbar />
-            <Box sx={{ padding: 2 }}>
+            {/* <Toolbar /> */}
+            <Box
+                sx={{
+                    paddingTop: '10px',
+                    paddingBottom: '10px',
+                    paddingLeft: '25px',
+                    paddingRight: '25px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                }}
+            >
+                <Box>
+                    <Button 
+                        variant="contained"
+                        size="small"
+                        sx={{
+                            backgroundColor: '#0000C9'
+                        }}
+                        onClick={() => setOpen(true)}
+                    >
+                        Create
+                    </Button>
+
+                    {
+                        (rowSelectionModel.length > 0) ? 
+                        <Button 
+                            variant="contained"
+                            size="small"
+                            color='error'
+                            sx={{
+                                marginLeft: '10px'
+                            }}
+                            onClick={deleteRow}
+                        >
+                            Delete
+                        </Button>
+                        :
+                        null
+                    }
+
+                </Box>
+            </Box>
+            <Box sx={{ padding: 2, height: '70vh' }}>
                 Status
                 <Box sx={{ height: '100%', width: '100%', marginTop: 2 }}>
                     <DataGrid
                         rows={rows}
                         columns={columns}
+                        slots={{ toolbar: GridToolbar }}
+                        onRowClick={handleClickedRow}
+                        onRowSelectionModelChange={(newRowSelectionModel) => {
+                            setRowSelectionModel(newRowSelectionModel);
+                        }}
+                        rowSelectionModel={rowSelectionModel}
                         initialState={{
                             pagination: {
                               paginationModel: {
                                 pageSize: 5,
                               },
                             },
+                            sorting: {
+                                sortModel: [{ field: 'sequence', sort: 'asc' }],
+                              },
                           }}
                         pageSizeOptions={[5]}
                         checkboxSelection
@@ -39,6 +218,89 @@ const Status = ( () => {
                     />
                 </Box>
             </Box>
+
+            <Modal
+                open={open}
+                onClose={cancelModal}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box sx={styleModal}>
+                    {
+                        (edit == false) ? 
+                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                            Create Status
+                        </Typography>
+                        :
+                        <Typography id="modal-modal-title" variant="h6" component="h2">
+                            Edit Status
+                        </Typography>
+                    }
+
+                    <Box
+                        component="form"
+                    >
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                marginTop: '10px',
+                            }}
+                        >
+                            <Typography sx={{ width: '100px', textAlign: 'right' }}> Name </Typography>
+                            <TextField sx={{ marginLeft: '20px' }} id="name" value={name} onChange={(e) => setName(e.target.value)}fullWidth/>
+                        </Box>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                marginTop: '10px',
+                            }}
+                        >
+                            <Typography sx={{ width: '100px', textAlign: 'right' }}> Sequence </Typography>
+                            <TextField sx={{ marginLeft: '20px' }} id="sequence" value={sequence} onChange={(e) => setSequence(Number(e.target.value))} fullWidth/>
+                        </Box>
+                        <Box
+                            sx={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                marginTop: '10px',
+                            }}
+                        >
+                            <Typography sx={{ width: '100px', textAlign: 'right' }}> Active </Typography>
+                            <Checkbox sx={{ marginLeft: '20px' }} id="active" value={active} defaultChecked={active} onChange={(e) => setActive(e.target.checked)}/>
+                        </Box>
+                    </Box>
+                    <Box
+                        sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'right',
+                            height: '100px'
+                        }}
+                    >
+                        <Button 
+                            variant="contained"
+                            size="medium"
+                            sx={{
+                                backgroundColor: '#0000C9',
+                                marginRight: '10px'
+                            }}
+                            onClick={() => create()}
+                        >
+                            Save
+                        </Button>
+                        <Button 
+                            variant="outlined"
+                            size="medium"
+                            onClick={cancelModal}
+                        >
+                            Cancel
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
+
         </Box>
     );
 })
